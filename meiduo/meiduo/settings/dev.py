@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework' # DRF
+    # 'meiduo.apps.users.apps.UsersConfig',
+    'users.apps.UsersConfig',
 
 ]
 
@@ -206,3 +208,6 @@ REST_FRAMEWORK = {
     # 异常处理
     'EXCEPTION_HANDLER': 'utils.exceptions.exception_handler',
 }
+
+# 设置用户认证的类型：格式为：包.类型cdlscd
+AUTH_USER_MODEL = 'users.User'
