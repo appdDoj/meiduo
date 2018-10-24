@@ -31,7 +31,11 @@ SECRET_KEY = '4j#gi7*q)m=+378e)a-3p@&k_xe&9lxj2x*_--vv_jv@b^-@i!'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+#允许主机
+ALLOWED_HOSTS = [
+    'api.meiduo.site',
+    # '127.0.0.1',
+]
 
 
 # Application definition
@@ -50,7 +54,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware', # 最外层的中间件,为了保证跨域的请求问题要先解决，所以在最前面
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -212,3 +216,11 @@ REST_FRAMEWORK = {
 
 # 设置用户认证的类型：格式为：包.类型cdlscd
 AUTH_USER_MODEL = 'users.User'
+
+#配置cors的白名单
+CORS_ORIGIN_WHITELIST = (
+    'www.meiduo.site:8080',
+    '127.0.0.1:8080',
+    'localhost:8080',
+    'api.meiduo.site:8000'
+)
