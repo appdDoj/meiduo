@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework' # DRF
+    'rest_framework', # DRF
     # 'meiduo.apps.users.apps.UsersConfig',
     'users.apps.UsersConfig',
 
