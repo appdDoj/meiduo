@@ -214,6 +214,18 @@ LOGGING = {
 REST_FRAMEWORK = {
     # 异常处理
     'EXCEPTION_HANDLER': 'meiduo.utils.exceptions.exception_handler',
+    # 认证（读取用户的身份信息。判断当前的登录用户是否是本网站的用户）
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',  # JWT认证（放在首位就是默认）
+        'rest_framework.authentication.SessionAuthentication',  # session机制认证
+        'rest_framework.authentication.BasicAuthentication',  # 基础认证
+    ),
+}
+
+# JWT配置
+JWT_AUTH = {
+    # 配置状态保持的有效期，1天
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
 }
 
 # 设置用户认证的类型：格式为：包.类型cdlscd
