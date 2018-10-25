@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView
 from .models import User
 
+from .serializers import UserCreateSerializer
 
 # url(r'^mobiles/(?P<mobile>1[3-9]\d{9})/count/$', views.MobileCountView.as_view()),
 class UsernameCountView(APIView):
@@ -38,5 +39,8 @@ class MobileCountView(APIView):
 
 
 class UserCreateView(CreateAPIView):
-    # queryset =
+    """注册
+    # 新增（用户数据-->校验-->反序列化-->create()-->save()）：保存用户传入的数据到数据库
+    """
+    # 指定序列化器
     serializer_class = UserCreateSerializer
