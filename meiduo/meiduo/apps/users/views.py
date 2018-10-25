@@ -5,7 +5,7 @@ from rest_framework.generics import CreateAPIView
 from . import serializers
 from .models import User
 
-from .serializers import UserCreateSerializer
+from .serializers import CreateUserSerializer
 
 # url(r'^mobiles/(?P<mobile>1[3-9]\d{9})/count/$', views.MobileCountView.as_view()),
 class UsernameCountView(APIView):
@@ -45,4 +45,4 @@ class UserCreateView(CreateAPIView):
     # 新增（用户数据-->校验-->反序列化-->create()-->save()）：保存用户传入的数据到数据库
     """
     # 指定序列化器
-    serializer_class = serializers.UserCreateSerializer
+    serializer_class = serializers.CreateUserSerializer
