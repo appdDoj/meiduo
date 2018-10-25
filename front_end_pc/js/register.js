@@ -222,6 +222,7 @@ var vm = new Vue({
                     })
                     .then(response => {
                          // 记录用户的登录状态
+                        //登录之前端存储JWT token
                         sessionStorage.clear();
                         localStorage.clear();
                         localStorage.token = response.data.token;
