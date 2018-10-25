@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     'corsheaders',  # cors
 
     'users.apps.UsersConfig', # 注册用户模块,为了适应AUTH_USER_MODEL，所以需要在注册时以users开头
-    # 'oauth.apps.OauthConfig', # 第三方登录
+    'oauth.apps.OauthConfig', # 第三方登录
 ]
 
 MIDDLEWARE = [

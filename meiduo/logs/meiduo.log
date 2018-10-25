@@ -404,3 +404,5 @@ WARNING 2018-10-25 23:34:41,309 basehttp 124 "POST /authorizations/ HTTP/1.1" 40
 INFO 2018-10-25 23:36:23,018 basehttp 124 "GET /image_codes/eef291f2-0818-4897-8756-bebbdb372878/ HTTP/1.1" 200 3221
 INFO 2018-10-25 23:36:29,065 basehttp 124 "GET /usernames/admin/count/ HTTP/1.1" 200 30
 INFO 2018-10-25 23:36:41,564 basehttp 124 "POST /authorizations/ HTTP/1.1" 200 204
+WARNING 2018-10-25 23:38:36,787 basehttp 124 "POST /authorizations/ HTTP/1.1" 400 67
+WARNING 2018-10-25 23:38:42,346 basehttp 124 "POST /authorizations/ HTTP/1.1" 400 67
