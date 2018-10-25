@@ -230,6 +230,11 @@ JWT_AUTH = {
     'JWT_RESPONSE_PAYLOAD_HANDLER': 'users.utils.jwt_response_payload_handler',
 }
 
+# 指定Django是被用户身份的类
+AUTHENTICATION_BACKENDS = [
+    'users.utils.UsernameMobileAuthBackend',
+]
+
 # 设置用户认证的类型：格式为：包.类型cdlscd
 AUTH_USER_MODEL = 'users.User'
 
