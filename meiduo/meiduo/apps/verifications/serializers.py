@@ -1,5 +1,10 @@
 from rest_framework import serializers
 from django_redis import get_redis_connection
+from redis import RedisError
+
+import logging
+# 日志记录器
+logger = logging.getLogger('django')
 
 
 class ImageCodeCheckSerializer(serializers.Serializer):
@@ -26,6 +31,13 @@ class ImageCodeCheckSerializer(serializers.Serializer):
         image_code_server = redis_conn.get('img_%s' % image_code_id)
         if image_code_server is None:
             raise serializers.ValidationError('无效验证码')
+
+        # 删除图片验证码，防止暴力测试：必须先拿到再删除
+        # 删除图片验证码是附带的可有可无的业务逻辑，不能让他阻塞主线的业务逻辑，所以出现了异常，不需要响应数据，忽略异常后，后续逻辑继续执行
+        try:
+            redis_conn.delete('img_%s' % image_code_id)
+        except RedisError as e:
+            logger.error(e)
 
         # 需要先将bytes类型的image_code_server，转成字符串
         # py3的redis存储的数据，读取出来以后都是bytes类型的
