@@ -1,4 +1,5 @@
 from django.http import HttpResponse
+from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django_redis import get_redis_connection
@@ -7,7 +8,7 @@ import random
 
 # from utils.ytx_sdk.sendSMS import CCP
 
-from rest_framework import serializers
+from . import serializers
 
 
 # url(r'^image_codes/(?P<mobile>1[3-9]\d{9})/$', views.ImageCodeView.as_view()),
@@ -16,40 +17,35 @@ import logging
 from . import constants
 
 
-class SMSCodeView(APIView):
-    """图片验证码"""
+# url('^sms_codes/(?P<mobile>1[3-9]\d{9})/$', views.SMSCodeView.as_view()),
+class SMSCodeView(GenericAPIView):
+    """发送短信"""
+
+    # 指定序列化器
+    serializer_class = serializers.ImageCodeCheckSerializer
 
     def get(self, request, mobile):
-        """提供图片验证码"""
-        # 创建redis连接，相关的配置在dev.py中的cache
-        redis_cli = get_redis_connection('sms_code')
-        # 将验证码、标记存入redis
-        # 如果标记存在则说明已经发过，不再发，如果标记不存在则发短信
+        # 接受参数：mobile,image_code_id,text
+        # 校验参数：image_code_id, text
+        # 对比text和服务器存储的图片验证码内容
 
-        # 判断：是否向此手机号发过短信
-        if redis_cli.get('sms_flag' + mobile):
-            raise serializers.ValidationError('请60秒后再发短信')
+        # 创建序列化器对象
+        serializer = self.get_serializer(data=request.query_params)
+        serializer.is_valid(raise_exception=True)
 
-        # 生成随机的6位数，作为验证码
-        code = random.randint(100000, 999999)
+        # 生成随机短信验证码:不够6位需要补0
+        sms_code = '%06d' % random.randint(0, 999999)
 
-        # 创建redis管道，只交互一次
-        redis_pipeline = redis_cli.pipeline()
-        # 保存验证码
-        redis_pipeline.setex('sms_code' + mobile, constants.SMS_CODE_EXPIRES, code)
-        # 保存发送标记
-        redis_pipeline.setex('sms_flag' + mobile, constants.SMS_FLAG_EXPIRES, 1)
-        # 执行
-        redis_pipeline.execute()
+        # 发送短信验证码
+        # CCP().send_template_sms(mobile, [sms_code, constants.SMS_CODE_REDIS_EXPIRES // 60], 1)
 
-        # 发短信
-        # CCP.sendTemplateSMS(mobile,code,constants.SMS_CODE_EXPIRES/60,1)
-        # print(code)
-        # 调用celery的任务：任务名.delay(参数)
-        send_sms_code.delay(mobile, code, constants.SMS_CODE_EXPIRES / 60, 1)
+        # 存储短信验证码
+        redis_conn = get_redis_connection('verify_codes')
+        # redis_conn.setex('key', 'time', 'value')
+        redis_conn.setex('sms_%s' % mobile, constants.SMS_CODE_EXPIRES, sms_code)
 
-        # 响应
-        return Response({'message': 'OK'})
+        # 响应发送短信验证码结果
+        return Response({'message':'OK'})
 
 
 # url(r'^image_codes/(?P<image_code_id>[\w-]+)/$', views.ImageCodeView.as_view()),
