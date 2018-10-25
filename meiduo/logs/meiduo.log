@@ -376,3 +376,11 @@ INFO 2018-10-25 20:36:29,386 basehttp 124 "GET /image_codes/2b425585-03b2-45c7-8
 INFO 2018-10-25 20:36:36,300 basehttp 124 "GET /image_codes/6bc8fe99-197d-40e1-9a47-b9518d4f3f8c/ HTTP/1.1" 200 3205
 INFO 2018-10-25 20:36:42,501 basehttp 124 "GET /sms_codes/13534325323/?text=wtqp&image_code_id=6bc8fe99-197d-40e1-9a47-b9518d4f3f8c HTTP/1.1" 200 16
 INFO 2018-10-25 20:36:42,524 basehttp 124 "GET /mobiles/13534325323/count/ HTTP/1.1" 200 34
+ERROR 2018-10-25 20:41:06,112 exception 80 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+WARNING 2018-10-25 20:41:06,534 basehttp 124 "GET / HTTP/1.1" 400 70767
+ERROR 2018-10-25 20:41:07,751 exception 80 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+WARNING 2018-10-25 20:41:07,846 basehttp 124 "GET /favicon.ico HTTP/1.1" 400 70820
+INFO 2018-10-25 20:41:12,450 basehttp 124 "GET /image_codes/3ec0d4e3-1c2e-4072-a851-e61a52de0b72/ HTTP/1.1" 200 2899
+INFO 2018-10-25 20:41:16,095 basehttp 124 "GET /mobiles/13534325323/count/ HTTP/1.1" 200 34
+INFO 2018-10-25 20:41:18,135 basehttp 124 "GET /mobiles/13534325323/count/ HTTP/1.1" 200 34
+INFO 2018-10-25 20:41:18,218 basehttp 124 "GET /sms_codes/13534325323/?text=dqgc&image_code_id=3ec0d4e3-1c2e-4072-a851-e61a52de0b72 HTTP/1.1" 200 16
