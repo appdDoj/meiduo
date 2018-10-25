@@ -37,7 +37,12 @@ class SMSCodeView(GenericAPIView):
         sms_code = '%06d' % random.randint(0, 999999)
 
         # 发送短信验证码
+        # 此处的发送短信是耗时的操作，不能阻塞后续的业务逻辑，所以需要异步的进行短信的发送
         # CCP().send_template_sms(mobile, [sms_code, constants.SMS_CODE_REDIS_EXPIRES // 60], 1)
+
+        # 异步发送短信验证码
+        # delay ： 将延时任务，添加到任务队列，并触发异步任务，让后worker可以观察到
+        send_sms_code.delay(mobile, sms_code)
 
         # 存储短信验证码
         redis_conn = get_redis_connection('verify_codes')
