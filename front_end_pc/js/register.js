@@ -1,8 +1,6 @@
 var vm = new Vue({
 	el: '#app',
 	data: {
-	    // host:host,
-        host,
 		error_name: false,
 		error_password: false,
 		error_check_password: false,
@@ -17,19 +15,20 @@ var vm = new Vue({
 		mobile: '',
 		image_code: '',
 		sms_code: '',
-		allow: false,
+		allow: true,
 
         image_code_id: '', // uuid
         image_code_url: '', // 访问后端视图的地址，得到image
 
-        sending_flag: false, // 是否正在发送短信的标识
+        send_flag: false, // 是否正在发送短信的标识
         sms_code_tip: '获取短信验证码', // 获取短信验证码的提示文字
-        error_image_code_message: '', // 图片验证码错误提示
+        sms_code_error_tip: '短信验证码错误',
+        error_image_code_message: '', // 图片验证码错误
 
-        error_name_message: '', // 用户名输入框错误提示
-        error_phone_message: '', // 手机号码输入框错误提示
-        error_sms_code_message: '', // 对象验证码错误提示
-
+        error_name_message: '', // 请输入5-20个字符的用户
+        error_phone_message: '', // 您输入的手机号格式不正确
+        error_sms_code_message: '', // 请填写短信验证码
+        host:host,
 
 	},
 	// 当模板渲染结束时会被调用的
@@ -65,7 +64,6 @@ var vm = new Vue({
         check_username: function (){
             var len = this.username.length;
             if(len<5||len>20) {
-                this.error_name_message = '请输入5-20个字符的用户名';
                 this.error_name = true;
             } else {
                 this.error_name = false;
@@ -109,7 +107,7 @@ var vm = new Vue({
             if(re.test(this.mobile)) {
                 this.error_phone = false;
             } else {
-                this.error_phone_message = '您输入的手机号格式不正确';
+                // this.error_phone_message = '您输入的手机号格式不正确';
                 this.error_phone = true;
             }
             if (this.error_phone == false) {
@@ -175,18 +173,18 @@ var vm = new Vue({
                     // 倒计时60秒，60秒后允许用户再次点击发送短信验证码的按钮
                     var num = 60;
                     // 设置一个计时器
-                    var t = setInterval(() => {
+                    var t = setInterval(function() {
                         if (num == 1) {
                             // 如果计时器到最后, 清除计时器对象
                             clearInterval(t);
                             // 将点击获取验证码的按钮展示的文本回复成原始文本
-                            this.sms_code_tip = '获取短信验证码';
+                            vm.sms_code_tip = '获取短信验证码';
                             // 将点击按钮的onclick事件函数恢复回去
-                            this.sending_flag = false;
+                            vm.sending_flag = false;
                         } else {
                             num -= 1;
                             // 展示倒计时信息
-                            this.sms_code_tip = num + '秒';
+                            vm.sms_code_tip = num + '秒';
                         }
                     }, 1000, 60)
                 })
@@ -223,18 +221,18 @@ var vm = new Vue({
                         responseType: 'json'
                     })
                     .then(response => {
-
-                        // 记录用户的登录状态
+                         // 记录用户的登录状态
                         sessionStorage.clear();
                         localStorage.clear();
                         localStorage.token = response.data.token;
                         localStorage.username = response.data.username;
                         localStorage.user_id = response.data.id;
-
                         location.href = '/index.html';
                     })
                     .catch(error=> {
                         if (error.response.status == 400) {
+                            // this.error_sms_code_message = '短信验证码错误';
+							// this.error_sms_code = true;
                             if ('non_field_errors' in error.response.data) {
                                 this.error_sms_code_message = error.response.data.non_field_errors[0];
                             } else {
@@ -246,6 +244,6 @@ var vm = new Vue({
                         }
                     })
             }
-        }
+        },
 	}
 });

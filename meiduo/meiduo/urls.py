@@ -20,5 +20,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     # users
     url('^', include('users.urls')),
+    # 验证模块
     url('^', include('verifications.urls')),
 ]

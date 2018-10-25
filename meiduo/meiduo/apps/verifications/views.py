@@ -3,17 +3,11 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django_redis import get_redis_connection
+from django.http import HttpResponse
 import random
-
-
-# from utils.ytx_sdk.sendSMS import CCP
-
 from . import serializers
-
-
-# url(r'^image_codes/(?P<mobile>1[3-9]\d{9})/$', views.ImageCodeView.as_view()),
+from celery_tasks.sms.tasks import send_sms_code
 from meiduo.libs.captcha.captcha import captcha
-import logging
 from . import constants
 
 
@@ -42,10 +36,10 @@ class SMSCodeView(GenericAPIView):
 
         # 异步发送短信验证码
         # delay ： 将延时任务，添加到任务队列，并触发异步任务，让后worker可以观察到
-        send_sms_code.delay(mobile, sms_code)
+        # send_sms_code.delay(mobile, sms_code)
 
         # 存储短信验证码
-        redis_conn = get_redis_connection('verify_codes')
+        redis_conn = get_redis_connection('sms_code')
         # redis_conn.setex('key', 'time', 'value')
 
         # redis_conn.setex('sms_%s' % mobile, constants.SMS_CODE_EXPIRES, sms_code)
@@ -63,6 +57,9 @@ class SMSCodeView(GenericAPIView):
 
         # 注意：记得一定要调用execute()
         pl.execute()
+        # 调用celery异步发送短信，异步任务函数中的参数，必须一一按照顺序填写到delay中
+
+        send_sms_code.delay(mobile,sms_code)
         # 响应发送短信验证码结果
         return Response({'message':'OK'})
 
@@ -79,7 +76,7 @@ class ImageCodeView(APIView):
 
 
         # 将图片验证码的内容存储到redis
-        redis_conn = get_redis_connection('verify_codes')
+        redis_conn = get_redis_connection('sms_code')
         redis_conn.set('img_%s' % image_code_id, text, constants.IMAGE_CODE_REDIS_EXPIRES)
 
         # 将图片响应给用户

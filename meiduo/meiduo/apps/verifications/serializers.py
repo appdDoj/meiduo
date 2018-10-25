@@ -25,7 +25,7 @@ class ImageCodeCheckSerializer(serializers.Serializer):
         text = attrs.get('text')
 
         # 获取连接到redis的对象
-        redis_conn = get_redis_connection('verify_codes')
+        redis_conn = get_redis_connection('sms_code')
 
         # 获取redis中存储的图片验证码
         image_code_server = redis_conn.get('img_%s' % image_code_id)

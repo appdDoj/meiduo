@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
-
+import datetime
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -49,8 +49,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework', # DRF
     # 'meiduo.apps.users.apps.UsersConfig',
-    'users.apps.UsersConfig',
+    'corsheaders',  # cors
 
+    'users.apps.UsersConfig', # 注册用户模块,为了适应AUTH_USER_MODEL，所以需要在注册时以users开头
+    # 'oauth.apps.OauthConfig', # 第三方登录
 ]
 
 MIDDLEWARE = [
@@ -137,7 +139,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
-
+# Redis
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
@@ -211,7 +213,7 @@ LOGGING = {
 # drf的配置
 REST_FRAMEWORK = {
     # 异常处理
-    'EXCEPTION_HANDLER': 'utils.exceptions.exception_handler',
+    'EXCEPTION_HANDLER': 'meiduo.utils.exceptions.exception_handler',
 }
 
 # 设置用户认证的类型：格式为：包.类型cdlscd
@@ -224,3 +226,5 @@ CORS_ORIGIN_WHITELIST = (
     'localhost:8080',
     'api.meiduo.site:8000'
 )
+
+CORS_ALLOW_CREDENTIALS = True  # 允许携带cookie

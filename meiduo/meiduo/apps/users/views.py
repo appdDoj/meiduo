@@ -1,6 +1,8 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView
+
+from . import serializers
 from .models import User
 
 from .serializers import UserCreateSerializer
@@ -43,4 +45,4 @@ class UserCreateView(CreateAPIView):
     # 新增（用户数据-->校验-->反序列化-->create()-->save()）：保存用户传入的数据到数据库
     """
     # 指定序列化器
-    serializer_class = UserCreateSerializer
+    serializer_class = serializers.UserCreateSerializer
