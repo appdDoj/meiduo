@@ -44,6 +44,9 @@ class SMSCodeView(GenericAPIView):
         # redis_conn.setex('key', 'time', 'value')
         redis_conn.setex('sms_%s' % mobile, constants.SMS_CODE_EXPIRES, sms_code)
 
+        # 存储是否60s重复发送短信的标记
+        redis_conn.setex('send_flag_%s' % mobile, constants.SMS_FLAG_EXPIRES, 1)
+
         # 响应发送短信验证码结果
         return Response({'message':'OK'})
 
