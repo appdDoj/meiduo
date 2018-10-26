@@ -6,6 +6,13 @@ from rest_framework_jwt.settings import api_settings
 from .models import User
 
 
+class UserDetailSerializer(serializers.ModelSerializer):
+    """用户基本信息序列化器: 做序列化"""
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'mobile', 'email', 'email_active']
+
 class CreateUserSerializer(serializers.ModelSerializer):
     """注册的校验序列化器"""
 

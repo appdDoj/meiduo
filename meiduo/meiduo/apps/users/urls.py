@@ -12,5 +12,7 @@ urlpatterns = [
     url(r'^users/$', views.UserCreateView.as_view()),
     # JWT登录
     url(r'^authorizations/$', obtain_jwt_token),
+    # 用户基本信息
+    url(r'^user/$', views.UserDetailView.as_view()),
 
 ]

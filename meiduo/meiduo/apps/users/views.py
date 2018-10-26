@@ -1,11 +1,38 @@
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, RetrieveAPIView
 
 from . import serializers
 from .models import User
 
 from .serializers import CreateUserSerializer
+
+# url(r'^user/$', views.UserDetailView.as_view()),
+class UserDetailView(RetrieveAPIView):
+    """用户基本信息
+    1.必须用户登录后才能访问该接口
+    2.因为目前前端没有传入主键到视图中，所以RetrieveAPIView中的get_object()方法无法获取到pk，所以重写
+    """
+
+    # 指定权限：必须用户登录后才能访问该接口
+    permission_classes = [IsAuthenticated]
+
+    # 指定序列化器
+    serializer_class = serializers.UserDetailSerializer
+
+    def get_object(self):
+        """在这个方法中返回当前的登录用户的user信息"""
+        return self.request.user
+
+    # def get(self, request):
+    #     # 得到当前登录用户user信息
+    #     # 创建序列化器对象
+    #     # 进行序列化
+    #     # 将序列化结果响应
+    #     pass
+
+
 
 # url(r'^mobiles/(?P<mobile>1[3-9]\d{9})/count/$', views.MobileCountView.as_view()),
 class UsernameCountView(APIView):
