@@ -1,3 +1,4 @@
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -7,6 +8,30 @@ from . import serializers
 from .models import User
 
 from .serializers import CreateUserSerializer
+
+# url(r'^emails/verification/$', views.VerifyEmailView.as_view()),
+class VerifyEmailView(APIView):
+    """验证邮箱
+    目的：获取token, 读取出user_id, 查询出当前要认证的用户，将用户的email_active设置True
+    """
+    def get(self, request):
+        # 获取token
+        token = request.query_params.get('token')
+        if token is None:
+            return Response({'message':'缺少token'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 读取出user_id, 查询出当前要认证的用户
+        user = User.check_verify_email_token(token)
+        if user is None:
+            return Response({'message':'无效token'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 将用户的email_active设置True
+        user.email_active = True
+        user.save()
+
+        # 响应结果
+        return Response({'message': 'OK'})
+
 
 class EmailView(UpdateAPIView):
     """添加邮箱"""
