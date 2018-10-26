@@ -12,7 +12,6 @@ app = Celery('meiduo')
 # 导入celery配置
 app.config_from_object('celery_tasks.config')
 
-# 自动注册celery任务
-app.autodiscover_tasks([
-    'celery_tasks.sms',
-])
+
+# 自动的将异步任务添加到celery_app
+app.autodiscover_tasks(['celery_tasks.sms', 'celery_tasks.email'])
