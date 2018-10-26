@@ -406,3 +406,11 @@ INFO 2018-10-25 23:36:29,065 basehttp 124 "GET /usernames/admin/count/ HTTP/1.1"
 INFO 2018-10-25 23:36:41,564 basehttp 124 "POST /authorizations/ HTTP/1.1" 200 204
 WARNING 2018-10-25 23:38:36,787 basehttp 124 "POST /authorizations/ HTTP/1.1" 400 67
 WARNING 2018-10-25 23:38:42,346 basehttp 124 "POST /authorizations/ HTTP/1.1" 400 67
+INFO 2018-10-26 08:21:41,368 basehttp 124 "OPTIONS /authorizations/ HTTP/1.1" 200 0
+WARNING 2018-10-26 08:21:41,536 basehttp 124 "POST /authorizations/ HTTP/1.1" 400 67
+WARNING 2018-10-26 08:21:46,157 basehttp 124 "POST /authorizations/ HTTP/1.1" 400 67
+WARNING 2018-10-26 08:21:50,418 basehttp 124 "POST /authorizations/ HTTP/1.1" 400 67
+WARNING 2018-10-26 08:22:11,039 basehttp 124 "POST /authorizations/ HTTP/1.1" 400 67
+WARNING 2018-10-26 08:22:17,743 basehttp 124 "POST /authorizations/ HTTP/1.1" 400 67
+WARNING 2018-10-26 08:23:05,637 basehttp 124 "POST /authorizations/ HTTP/1.1" 400 67
+INFO 2018-10-26 08:23:09,542 basehttp 124 "POST /authorizations/ HTTP/1.1" 200 204
