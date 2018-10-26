@@ -4,6 +4,54 @@ from django_redis import get_redis_connection
 from rest_framework_jwt.settings import api_settings
 from celery_tasks.email.tasks import send_verify_email
 from .models import User, Address
+# from goods.models import SKU
+from meiduo.apps.goods.models import SKU
+
+
+class UserBrowseHistorySerializer(serializers.Serializer):
+    """用户浏览记录序列化器
+    做校验和序列化话
+    """
+    sku_id = serializers.IntegerField(label='商品SKU ID', min_value=1)
+
+    # 单独校验sku_id
+    def validate_sku_id(self, value):
+        """
+        校验sku_id
+        :param value: sku_id
+        :return: value
+        """
+        try:
+            SKU.objects.get(id=value)
+        except SKU.DoesNotExist:
+            raise serializers.ValidationError('无效的sku_id')
+
+        return value
+
+    def create(self, validated_data):
+        """重写序列化器的保存的方法
+        目的：自己将sku_id存储到redis数据库
+        """
+        # 读取登录用户的id
+        user_id = self.context['request'].user.id
+        # 读取商品sku_id
+        sku_id = validated_data.get('sku_id')
+
+        # 创建连接到redis的对象
+        redis_conn = get_redis_connection('history')
+
+        # 去重
+        redis_conn.lrem('history_%s' % user_id, 0, sku_id)
+
+        # 保存
+        redis_conn.lpush('history_%s' % user_id, sku_id)
+
+        # 截取
+        redis_conn.ltrim('history_%s' % user_id, 0, 4)
+
+        # 响应sku_id
+        return validated_data
+
 
 
 class UserAddressSerializer(serializers.ModelSerializer):

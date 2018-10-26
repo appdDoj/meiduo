@@ -13,6 +13,16 @@ from .models import User
 
 from .serializers import CreateUserSerializer
 
+class UserBrowseHistoryView(CreateAPIView):
+    """用户浏览记录接口"""
+
+    # 指定权限：必须登录用户才能保存浏览记录
+    permission_classes = [IsAuthenticated]
+    # 指定序列化器
+    serializer_class = serializers.UserBrowseHistorySerializer
+
+
+
 class AddressViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin, GenericViewSet):
     """
     用户地址新增与修改

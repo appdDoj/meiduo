@@ -45,6 +45,15 @@ var vm = new Vue({
                 }
             })
         }
+        if (this.user_id) {
+            axios.post(this.host+'/browse_histories/', {
+                sku_id: this.sku_id
+            }, {
+                headers: {
+                    'Authorization': 'JWT ' + this.token
+                }
+            })
+        }
         this.get_cart();
         this.get_hot_goods();
         this.get_comments();
