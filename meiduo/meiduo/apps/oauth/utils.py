@@ -2,6 +2,13 @@ from urllib.parse import urlencode, parse_qs
 from django.conf import settings
 from urllib.request import urlopen
 
+from .exceptions import QQAPIException
+
+
+import logging
+# 日志记录器
+logger = logging.getLogger('django')
+
 
 class OAuthQQ(object):
     """QQ登录的工具类：封装了QQ登录的部分过程"""
@@ -65,15 +72,21 @@ class OAuthQQ(object):
         # 拼接请求地址
         url += query_params
 
-        # 美多商城向QQ服务器发送GET请求
-        # (bytes)'access_token=FE04************************CCE2&expires_in=7776000&refresh_token=88E4************************BE14'
-        response_data = urlopen(url).read()
-        # (str)'access_token=FE04************************CCE2&expires_in=7776000&refresh_token=88E4************************BE14'
-        response_str = response_data.decode()
-        # 将response_str，转成字典
-        response_dict = parse_qs(response_str)
-        # 读取access_token
-        access_token = response_dict.get('access_token')[0]
+        try:
+            # 美多商城向QQ服务器发送GET请求
+            # (bytes)'access_token=FE04************************CCE2&expires_in=7776000&refresh_token=88E4************************BE14'
+            response_data = urlopen(url).read()
+            # (str)'access_token=FE04************************CCE2&expires_in=7776000&refresh_token=88E4************************BE14'
+            response_str = response_data.decode()
+            # 将response_str，转成字典
+            response_dict = parse_qs(response_str)
+            # 读取access_token
+            access_token = response_dict.get('access_token')[0]
+        except Exception as e:
+            logger.error(e)
+            # 在封装工具类的时候，需要捕获异常，并抛出异常，千万不要解决异常，谁用谁解决异常
+            # BookInfo.objects.get()   类似于这样的一种思想
+            raise QQAPIException('获取access_token失败')
 
         return access_token
 
