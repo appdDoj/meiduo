@@ -54,6 +54,8 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig', # 注册用户模块,为了适应AUTH_USER_MODEL，所以需要在注册时以users开头
     'oauth.apps.OauthConfig', # 第三方登录
     'areas.apps.AreasConfig', # 省市区
+    'goods.apps.GoodsConfig', # 商品
+    'contents.apps.ContentsConfig', # 主页广告
 ]
 
 MIDDLEWARE = [
