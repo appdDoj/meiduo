@@ -2,8 +2,10 @@ from urllib.parse import urlencode, parse_qs
 from django.conf import settings
 from urllib.request import urlopen
 import json
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 from .exceptions import QQAPIException
+from . import constants
 
 
 import logging
@@ -86,7 +88,7 @@ class OAuthQQ(object):
         except Exception as e:
             logger.error(e)
             # 在封装工具类的时候，需要捕获异常，并抛出异常，千万不要解决异常，谁用谁解决异常
-            # BookInfo.objects.get()   类似于这样的一种思想
+            # BookInfo.objects.gSerializeet()   类似于这样的一种思想
             raise QQAPIException('获取access_token失败')
 
         return access_token
@@ -118,8 +120,17 @@ class OAuthQQ(object):
 
         return open_id
 
-
-
+    @staticmethod
+    def generate_save_user_token(openid):
+        """
+        生成保存用户数据的token
+        :param openid: 用户的openid
+        :return: token
+        """
+        serializer = Serializer(settings.SECRET_KEY, expires_in=constants.SAVE_QQ_USER_TOKEN_EXPIRES)
+        data = {'openid': openid}
+        token = serializer.dumps(data)
+        return token.decode()
 
 
 

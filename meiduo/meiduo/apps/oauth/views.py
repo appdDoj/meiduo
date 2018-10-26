@@ -2,6 +2,7 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework_jwt.settings import api_settings
 
 from .utils import OAuthQQ
 from .exceptions import QQAPIException
@@ -42,13 +43,34 @@ class QQAuthUserView(APIView):
 
         # 使用openid查询该QQ用户是否在美多商城中绑定过用户
         try:
-            OAuthQQUser.objects.get(openid=open_id)
+            # oauth_model : 代表一条记录，OAuthQQUser类型的对象
+            oauth_model = OAuthQQUser.objects.get(openid=open_id)
         except OAuthQQUser.DoesNotExist:
             # 如果openid没绑定美多商城用户，创建用户并绑定到openid
-            pass
+
+            # 生成openid签名后的结果
+            token_openid = oauth.generate_save_user_token(open_id)
+            # 将openid签名之后的结果响应给用户
+            return Response({'access_token': token_openid})
+            # return Response({'openid':open_id})
         else:
             # 如果openid已绑定美多商城用户，直接生成JWT token，并返回
-            pass
+            jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+            jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+
+            # 获取跟openid绑定的user对象
+            user = oauth_model.user
+
+            payload = jwt_payload_handler(user)
+            # JWT token
+            token = jwt_encode_handler(payload)
+
+            # 响应数据
+            return Response({
+                'token':token,
+                'user_id':user.id,
+                'username':user.username
+            })
 
 
 # url(r'^qq/authorization/$', views.QQAuthURLView.as_view()),
