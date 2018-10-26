@@ -4,7 +4,14 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .utils import OAuthQQ
+from .exceptions import QQAPIException
+from .models import OAuthQQUser
 # Create your views here.
+
+
+import logging
+# 日志记录器
+logger = logging.getLogger('django')
 
 
 # url(r'^qq/user/$', views.QQAuthUserView.as_view()), 
@@ -23,19 +30,25 @@ class QQAuthUserView(APIView):
         # 创建OAuthQQ对象
         oauth = OAuthQQ()
 
-        # 使用code向QQ服务器请求access_token
-        access_token = oauth.get_access_token(code)
+        try:
+            # 使用code向QQ服务器请求access_token
+            access_token = oauth.get_access_token(code)
 
-        # 使用access_token向QQ服务器请求openid
-        open_id = oauth.get_open_id(access_token)
-
+            # 使用access_token向QQ服务器请求openid
+            open_id = oauth.get_open_id(access_token)
+        except QQAPIException as e:
+            logger.error(e)
+            return Response({'message': 'QQ服务异常'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
         # 使用openid查询该QQ用户是否在美多商城中绑定过用户
-
-
-        # 如果openid已绑定美多商城用户，直接生成JWT token，并返回
-        # 如果openid没绑定美多商城用户，创建用户并绑定到openid
-        pass
+        try:
+            OAuthQQUser.objects.get(openid=open_id)
+        except OAuthQQUser.DoesNotExist:
+            # 如果openid没绑定美多商城用户，创建用户并绑定到openid
+            pass
+        else:
+            # 如果openid已绑定美多商城用户，直接生成JWT token，并返回
+            pass
 
 
 # url(r'^qq/authorization/$', views.QQAuthURLView.as_view()),
