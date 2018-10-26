@@ -29,7 +29,7 @@ class QQAuthUserSerializer(serializers.Serializer):
         # 检验短信验证码
         mobile = data['mobile']
         sms_code = data['sms_code']
-        redis_conn = get_redis_connection('verify_codes')
+        redis_conn = get_redis_connection('sms_code')
         real_sms_code = redis_conn.get('sms_%s' % mobile)
         if real_sms_code.decode() != sms_code:
             raise serializers.ValidationError('短信验证码错误')

@@ -59,7 +59,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('两次密码不一致')
 
         # 判断短信验证码
-        redis_conn = get_redis_connection('verify_codes')
+        redis_conn = get_redis_connection('sms_code')
         mobile = data['mobile']
         real_sms_code = redis_conn.get('sms_%s' % mobile)
         if real_sms_code is None:
