@@ -1,12 +1,28 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.generics import CreateAPIView, RetrieveAPIView
+from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView
 
 from . import serializers
 from .models import User
 
 from .serializers import CreateUserSerializer
+
+class EmailView(UpdateAPIView):
+    """添加邮箱"""
+
+    # 指定权限：必须用户登录后才能访问该接口
+    permission_classes = [IsAuthenticated]
+
+    # 指定序列化器
+    serializer_class = serializers.EmailSerializer
+
+    def get_object(self):
+        """在这个方法中返回当前的登录用户的user信息"""
+        return self.request.user
+
+
+
 
 # url(r'^user/$', views.UserDetailView.as_view()),
 class UserDetailView(RetrieveAPIView):

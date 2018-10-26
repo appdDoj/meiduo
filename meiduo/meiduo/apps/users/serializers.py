@@ -5,6 +5,34 @@ from rest_framework_jwt.settings import api_settings
 
 from .models import User
 
+class EmailSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ['id', 'email']
+        extra_kwargs = {
+            # 因为email在定义模型字段时可以为空,所以序列化器在映射该字段时默认是非必传的
+            # 由于这里就是跟新email,所以重新指定为必传的
+            'email': {
+                'required': True
+            }
+        }
+
+    def update(self, instance, validated_data):
+        """
+        重写序列化器的更新数据的方法
+        1.用于有目的的更新某些字段,（提示：put方法时全字段更新，重写可以实现指定字段的更新）
+        2.用于在此处发送邮件
+        :param instance: 外界传入的user模型对象
+        :param validated_data: 经过验证的数据
+        :return: instance
+        """
+        instance.email = validated_data.get('email')
+        instance.save()
+
+        return instance
+
+
 
 class UserDetailSerializer(serializers.ModelSerializer):
     """用户基本信息序列化器: 做序列化"""
