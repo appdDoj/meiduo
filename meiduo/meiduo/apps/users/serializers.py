@@ -39,6 +39,23 @@ class UserBrowseHistorySerializer(serializers.Serializer):
 
         # 创建连接到redis的对象
         redis_conn = get_redis_connection('history')
+        # 管道
+        pl = redis_conn.pipeline()
+
+        # 去重
+        # redis_conn.lrem('history_%s' % user_id, 0, sku_id)
+        pl.lrem('history_%s' % user_id, 0, sku_id)
+
+        # 保存
+        # redis_conn.lpush('history_%s' % user_id, sku_id)
+        pl.lpush('history_%s' % user_id, sku_id)
+
+        # 截取
+        # redis_conn.ltrim('history_%s' % user_id, 0, 4)
+        pl.ltrim('history_%s' % user_id, 0, 4)
+
+        # 执行
+        pl.execute()
 
         # 去重
         redis_conn.lrem('history_%s' % user_id, 0, sku_id)
