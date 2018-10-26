@@ -263,3 +263,11 @@ EMAIL_HOST_USER = 'dailyfreshzxc@yeah.net' # 授权的邮箱
 EMAIL_HOST_PASSWORD = 'dailyfresh123' # 邮箱授权时获得的密码，非注册登录密码
 EMAIL_FROM = '美多商城<dailyfreshzxc@yeah.net>' # 发件人抬头
 
+
+# DRF扩展
+REST_FRAMEWORK_EXTENSIONS = {
+    # 缓存时间
+    'DEFAULT_CACHE_RESPONSE_TIMEOUT': 60 * 60,
+    # 缓存存储
+    'DEFAULT_USE_CACHE': 'default',
+}
