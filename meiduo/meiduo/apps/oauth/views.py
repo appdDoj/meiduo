@@ -8,6 +8,7 @@ from rest_framework.generics import GenericAPIView
 from .utils import OAuthQQ
 from .exceptions import QQAPIException
 from .models import OAuthQQUser
+from . import serializers
 # Create your views here.
 
 
@@ -20,7 +21,7 @@ logger = logging.getLogger('django')
 class QQAuthUserView(GenericAPIView):
 
     # 指定序列化器
-    serializer_class = 'QQAuthUserSerializer'
+    serializer_class = serializers.QQAuthUserSerializer
 
     def get(self, request):
         """
