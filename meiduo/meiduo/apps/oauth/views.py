@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_jwt.settings import api_settings
+from rest_framework.generics import GenericAPIView
 
 from .utils import OAuthQQ
 from .exceptions import QQAPIException
@@ -16,13 +17,17 @@ logger = logging.getLogger('django')
 
 
 # url(r'^qq/user/$', views.QQAuthUserView.as_view()), 
-class QQAuthUserView(APIView):
-    """
-    处理oauth_callback回调页面时
-    提取code,access_token,openid
-    """
+class QQAuthUserView(GenericAPIView):
+
+    # 指定序列化器
+    serializer_class = 'QQAuthUserSerializer'
 
     def get(self, request):
+        """
+        处理oauth_callback回调页面时
+        提取code,access_token,openid
+        """
+
         # 提取code请求参数
         code = request.query_params.get('code')
         if code is None:
@@ -71,6 +76,28 @@ class QQAuthUserView(APIView):
                 'user_id':user.id,
                 'username':user.username
             })
+
+    def post(self, request):
+        """openid绑定用户"""
+        # 创建序列化器
+        serializer = self.get_serializer(data=request.data)
+        # 校验
+        serializer.is_valid(raise_exception=True)
+        # 调用create方法，实现绑定用户的保存
+        user = serializer.save()
+
+        # 生成状态保持信息
+        # 生成JWT token，并响应
+        jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+        jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+        payload = jwt_payload_handler(user)
+        token = jwt_encode_handler(payload)
+
+        return Response({
+            'token': token,
+            'username': user.username,
+            'user_id': user.id
+        })
 
 
 # url(r'^qq/authorization/$', views.QQAuthURLView.as_view()),
