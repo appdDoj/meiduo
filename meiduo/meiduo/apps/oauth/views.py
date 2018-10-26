@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import status
 
 from .utils import OAuthQQ
 # Create your views here.
@@ -15,8 +16,20 @@ class QQAuthUserView(APIView):
 
     def get(self, request):
         # 提取code请求参数
+        code = request.query_params.get('code')
+        if code is None:
+            return Response({'message':'缺少code'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 创建OAuthQQ对象
+        oauth = OAuthQQ()
+
         # 使用code向QQ服务器请求access_token
+        access_token = oauth.get_access_token(code)
+
         # 使用access_token向QQ服务器请求openid
+        open_id = oauth.get_open_id(access_token)
+
+
         # 使用openid查询该QQ用户是否在美多商城中绑定过用户
 
 
@@ -27,12 +40,17 @@ class QQAuthUserView(APIView):
 
 # url(r'^qq/authorization/$', views.QQAuthURLView.as_view()),
 class QQAuthURLView(APIView):
-    """提供QQ登录页面网址"""
+    """提供QQ登录页面网址
+    http://127.0.0.1:8000/oquth/qq/authorization/?next=user_center_info.html
+    """
 
     def get(self, request):
 
+        # 获取next参数
+        next = request.query_params.get('next')
+
         # 创建OAuthQQ对象
-        oauth = OAuthQQ()
+        oauth = OAuthQQ(state=next)
 
         # 获取QQ扫码登录页面的网址
         login_url = oauth.get_login_url()
