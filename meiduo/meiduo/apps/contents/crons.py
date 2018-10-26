@@ -69,6 +69,7 @@ def generate_static_index_html():
 
     # 1.获取要渲染的模板文件
     # loader.get_template('index.html') : 会去项目的templates文件夹中寻找指定的要被渲染的模板文件
+    # get_template ： 会从setings模块的TEMPLATES选项中的DIRS字段指定的路径读取模板文件
     template = loader.get_template('index.html')
 
     # 2.拿着查询并构造出来的context上下文，去渲染上一步加载出来的模板文件
