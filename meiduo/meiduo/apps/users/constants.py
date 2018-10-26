@@ -1,0 +1,2 @@
+# 邮件激活连接有效期为1天
+VERIFY_EMAIL_TOKEN_EXPIRES = 60 * 60 * 24
