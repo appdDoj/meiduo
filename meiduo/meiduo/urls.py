@@ -22,12 +22,16 @@ urlpatterns = [
     url('^', include('users.urls')),
     # 验证模块
     url('^', include('verifications.urls')),
+    # verifications
+    url(r'^', include('verifications.urls')),
    # oauth
     url(r'^oauth/', include('oauth.urls')),
    # areas
     url(r'^', include('areas.urls')),
-
-
     # 富文本编辑器
     url(r'^ckeditor/', include('ckeditor_uploader.urls')),
+    # goods
+    url(r'^', include('goods.urls')),
+    # carts
+    url(r'^', include('carts.urls')),
 ]
