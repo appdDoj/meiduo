@@ -7,7 +7,8 @@ from django.template import loader
 import os
 import time
 
-from goods.models import GoodsChannel
+# from goods.models import GoodsChannel
+from meiduo.apps.goods.models import GoodsChannel
 from .models import ContentCategory
 
 
