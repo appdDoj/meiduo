@@ -4,8 +4,8 @@ from django_redis import get_redis_connection
 from rest_framework_jwt.settings import api_settings
 from celery_tasks.email.tasks import send_verify_email
 from .models import User, Address
-# from goods.models import SKU
-from meiduo.apps.goods.models import SKU
+from goods.models import SKU
+# from meiduo.apps.goods.models import SKU
 
 
 class UserBrowseHistorySerializer(serializers.Serializer):

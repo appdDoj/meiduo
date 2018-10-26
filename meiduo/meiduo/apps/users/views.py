@@ -1,3 +1,4 @@
+from django_redis import get_redis_connection
 from rest_framework import mixins
 from rest_framework import status
 from rest_framework.decorators import action
@@ -7,6 +8,8 @@ from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView
 from rest_framework.viewsets import GenericViewSet
 
+from goods.models import SKU
+from goods.serializers import SKUSerializer
 from . import constants
 from . import serializers
 from .models import User
@@ -20,6 +23,27 @@ class UserBrowseHistoryView(CreateAPIView):
     permission_classes = [IsAuthenticated]
     # 指定序列化器
     serializer_class = serializers.UserBrowseHistorySerializer
+
+    def get(self, request):
+        """读取用户浏览记录
+        """
+        # 创建连接到redis的对象
+        redis_conn = get_redis_connection('history')
+
+        # 读取出所有的sku_id信息
+        sku_ids = redis_conn.lrange('history_%s' % request.user.id, 0, -1)
+
+        # sku模型对象的容器
+        sku_list = []
+        # 遍历sku_ids，取出sku_id,查询sku
+        for sku_id in sku_ids:
+            sku = SKU.objects.get(id=sku_id)
+            sku_list.append(sku)
+
+        # 将sku_listJ进行序列化
+        serializer = SKUSerializer(sku_list, many=True)
+
+        return Response(serializer.data)
 
 
 

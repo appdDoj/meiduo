@@ -12,6 +12,8 @@ var vm = new Vue({
         send_email_btn_disabled: false,
         send_email_tip: '重新发送验证邮件',
         email_error: false,
+
+        histories: [] ,// 存储后端响应的浏览记录列表
     },
     mounted: function(){
         // 判断用户的登录状态
@@ -31,8 +33,23 @@ var vm = new Vue({
                     this.email = response.data.email;
                     this.email_active = response.data.email_active;
                 })
+
+                    // 补充请求浏览历史
+                    axios.get(this.host + '/browse_histories/', {
+                            headers: {
+                                'Authorization': 'JWT ' + this.token
+                            },
+                            responseType: 'json'
+                        })
+                        .then(response => {
+                            this.histories = response.data;
+                            for(var i=0; i<this.histories.length; i++){
+                                this.histories[i].url = '/goods/' + this.histories[i].id + '.html';
+                            }
+                        })
+                    })
                 .catch(error => {
-                    if (error.response.status==401 || error.response.status==403) {
+                    if (error.response.status==4N01 || error.response.status==403) {
                         location.href = '/login.html?next=/user_center_info.html';
                     }
                 });
