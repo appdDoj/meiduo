@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.utils import timezone
 from decimal import Decimal
+from django_redis import get_redis_connection
 
 from goods.models import SKU
 from . models import OrderInfo
@@ -56,9 +57,33 @@ class CommitOrderSerializer(serializers.ModelSerializer):
         )
 
         # 从redis读取购物车中被勾选的商品信息
+        redis_conn = get_redis_connection('cart')
+        # 获取hash里面的sku_id和count
+        # {
+        #     b'sku_id_1':b'count_1',
+        #     b'sku_id_2': b'count_2'
+        # }
+        redis_cart_dict = redis_conn.hgetall('cart_%s' % user.id)
+
+        # 获取set里面的sku_id
+        # [b'sku_id_1']
+        redis_cart_selected = redis_conn.smembers('selected_%s' % user.id)
+
+        # 读取出被勾选的商品的信息
+        # {
+        #     sku_id_1: count_1
+        # }
+        carts = {}
+        for sku_id in redis_cart_selected:
+            carts[int(sku_id)] = int(redis_cart_dict[sku_id])
+
+        # 读取出carts里面所有的sku_id
+        sku_ids = carts.keys()
 
         # 遍历购物车中被勾选的商品信息
+        for sku_id in sku_ids:
             # 获取sku对象
+            sku = SKU.objects.get(id=sku_id)
 
             # 判断库存 
 
