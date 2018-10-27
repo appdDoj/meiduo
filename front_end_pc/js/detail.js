@@ -96,7 +96,7 @@ var vm = new Vue({
                         'Authorization': 'JWT ' + this.token
                     },
                     responseType: 'json',
-                    withCredentials: true
+                    withCredentials: true// 自动带上同源策略的cookie
                 })
                 .then(response => {
                     alert('添加购物车成功');

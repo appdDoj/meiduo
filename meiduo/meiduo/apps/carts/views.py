@@ -3,6 +3,8 @@ from rest_framework.views import APIView
 from django_redis import get_redis_connection
 from rest_framework.response import Response
 from rest_framework import status
+import base64
+import pickle
 
 from . import serializers
 
@@ -67,7 +69,40 @@ class CartView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             # 如果是未登录用户，存储购物车到cookie
-            pass
+            # 读取出cookie中原有的购物车数据
+            cookie_cart_str = request.COOKIES.get('cart')
+
+            # 判断cookie中的购物车数据是否存在，如果存在再转字典；反之，给空字典
+            if cookie_cart_str:
+                cookie_cart_str_bytes = cookie_cart_str.encode()
+                cookie_cart_dict_bytes = base64.b64decode(cookie_cart_str_bytes)
+                cookie_cart_dict = pickle.loads(cookie_cart_dict_bytes)
+            else:
+                cookie_cart_dict = {}
+
+            # 判断sku_id是都在cookie_cart_dict，如果在就用新的count累加原有count;反之赋新值
+            if sku_id in cookie_cart_dict:
+                origin_count = cookie_cart_dict[sku_id]['count']
+                count += origin_count
+
+            cookie_cart_dict[sku_id] = {
+                'count': count,
+                'selected': selected
+            }
+
+            # 生成新的购物车字符串
+            new_cookie_cart_dict_bytes = pickle.dumps(cookie_cart_dict)
+            new_cookie_cart_str_bytes = base64.b64encode(new_cookie_cart_dict_bytes)
+            new_cookie_cart_str = new_cookie_cart_str_bytes.decode()
+
+            # 构造响应对象
+            response = Response(serializer.data, status=status.HTTP_201_CREATED)
+
+            # 将新的字典转成新的购物车字符串，写入到cookie
+            response.set_cookie('cart', new_cookie_cart_str)
+
+            # 响应
+            return response
 
     def get(self, request):
         """读取购物车"""
