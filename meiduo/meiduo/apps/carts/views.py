@@ -7,6 +7,7 @@ import base64
 import pickle
 
 from . import serializers
+from goods.models import SKU
 
 
 # Create your views here.
@@ -106,7 +107,77 @@ class CartView(APIView):
 
     def get(self, request):
         """读取购物车"""
-        pass
+        # 判断用户是否登录
+        try:
+            user = request.user
+        except Exception:
+            user = None
+
+        if user is not None and user.is_authenticated:
+            # 如果是已登录用户，存储购物车到redis
+            # 创建连接到redis的对象
+            redis_conn = get_redis_connection('cart')
+            # 查询hash里面的所有的sku_id和count数据
+            # {
+            #     b'sku_id_1':b'count_1',
+            #     b'sku_id_2': b'count_2',
+            # }
+            redis_cart_dict = redis_conn.hgetall('cart_%s' % user.id)
+
+            # 查询set里面的所有的sku_id
+            # [b'sku_id_1']
+            redis_selected_set = redis_conn.smembers('selected_%s' % user.id)
+
+            # """
+            # {
+            #     sku_id10: {
+            #         "count": 10,  // 数量
+            #         "selected": True  // 是否勾选
+            #     },
+            #     sku_id20: {
+            #         "count": 20,
+            #         "selected": False
+            #     },
+            #     ...
+            # }
+            # """
+            # 准备新的购物车数据的字典，跟cookie中的购物车统一数据结构（因为cookie中的购物车数据结构便于查询sku）
+            cart_dict = {}
+            # 遍历redis_cart_dict，取出里面的sku_id和count,转移到cart_dict
+            for sku_id, count in redis_cart_dict.items():
+                cart_dict[int(sku_id)] = {
+                    'count': int(count),
+                    'selected': sku_id in redis_selected_set  # 如果hash里面的sku_id不在集合中，表示未勾选，False
+                }
+
+        else:
+            # 如果是未登录用户，存储购物车到cookie
+            # 读取出cookie中原有的购物车数据
+            cookie_cart_str = request.COOKIES.get('cart')
+
+            # 判断cookie中的购物车数据是否存在，如果存在再转字典；反之，给空字典
+            if cookie_cart_str:
+                cookie_cart_str_bytes = cookie_cart_str.encode()
+                cookie_cart_dict_bytes = base64.b64decode(cookie_cart_str_bytes)
+                cart_dict = pickle.loads(cookie_cart_dict_bytes)
+            else:
+                cart_dict = {}
+
+        # 读取出所有的购物车商品的sku_id
+        sku_ids = cart_dict.keys()
+        # 根据sku_ids，查询出所有的sku对象
+        skus = SKU.objects.filter(id__in=sku_ids)
+
+        # 将count和selected临时的设置给sku
+        for sku in skus:
+            sku.count = cart_dict[sku.id]['count']
+            sku.selected = cart_dict[sku.id]['selected']
+
+        # 序列化skus
+        serializer = serializers.CartSKUSerializer(skus, many=True)
+
+        # 响应序列化结果
+        return Response(serializer.data)
 
     def put(self, request):
         """修改购物车"""
