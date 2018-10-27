@@ -7,7 +7,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView
 from rest_framework.viewsets import GenericViewSet
+from rest_framework_jwt.views import ObtainJSONWebToken
 
+from carts.utils import merge_cart_cookie_to_redis
 from goods.models import SKU
 from goods.serializers import SKUSerializer
 from . import constants
@@ -15,6 +17,48 @@ from . import serializers
 from .models import User
 
 from .serializers import CreateUserSerializer
+
+class UserAuthorizeView(ObtainJSONWebToken):
+    """自定义、重写账号登录系统
+    目的：在保留账号登录原有的逻辑不变的前提下，只需要追加合并购物车的业务逻辑即可
+    """
+
+    def post(self, request, *args, **kwargs):
+
+        # 保留账号登录原有的逻辑不变
+        response = super(UserAuthorizeView, self).post(request, *args, **kwargs)
+
+        # 获取验证之后的user对象
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.object.get('user') or request.user
+
+            # 合并购物车
+            response = merge_cart_cookie_to_redis(request=request, user=user, response=response)
+
+        return response
+
+        # """
+        # serializer = self.get_serializer(data=request.data)
+        #
+        # if serializer.is_valid():
+        #     user = serializer.object.get('user') or request.user
+        #     token = serializer.object.get('token')
+        #     response_data = jwt_response_payload_handler(token, user, request)
+        #     response = Response(response_data)
+        #     if api_settings.JWT_AUTH_COOKIE:
+        #         expiration = (datetime.utcnow() +
+        #                       api_settings.JWT_EXPIRATION_DELTA)
+        #         response.set_cookie(api_settings.JWT_AUTH_COOKIE,
+        #                             token,
+        #                             expires=expiration,
+        #                             httponly=True)
+        #     return response
+        #
+        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # """
+
+
 
 class UserBrowseHistoryView(CreateAPIView):
     """用户浏览记录接口"""

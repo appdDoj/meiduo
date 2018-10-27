@@ -11,7 +11,10 @@ urlpatterns = [
     # 注册
     url(r'^users/$', views.UserCreateView.as_view()),
     # JWT登录
-    url(r'^authorizations/$', obtain_jwt_token),
+    # url(r'^authorizations/$', obtain_jwt_token),
+    # url(r'^authorizations/$', ObtainJSONWebToken.as_view()),
+    url(r'^authorizations/$', views.UserAuthorizeView.as_view()),
+
     # 用户基本信息
     url(r'^user/$', views.UserDetailView.as_view()),
     # 添加邮箱
