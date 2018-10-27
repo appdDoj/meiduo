@@ -181,7 +181,76 @@ class CartView(APIView):
 
     def put(self, request):
         """修改购物车"""
-        pass
+        # 创建序列化器，校验参数，并返回校验之后的参数
+        serializer = serializers.CartSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        sku_id = serializer.validated_data.get('sku_id')
+        count = serializer.validated_data.get('count')
+        selected = serializer.validated_data.get('selected')
+
+        # 判断用户是否登录
+        try:
+            user = request.user
+        except Exception:
+            user = None
+
+        if user is not None and user.is_authenticated:
+            # 如果是已登录用户，存储购物车到redis
+            # 创建连接到redis的对象
+            redis_conn = get_redis_connection('cart')
+
+            # 管道
+            pl = redis_conn.pipeline()
+
+            # 修改hash里面的sku_id和count
+            # 因为前后端约定购物车修改的数据传入的规则是幂等的，所以后端不需要判断sku_id是否存在，直接覆盖写入
+            pl.hset('cart_%s' % user.id, sku_id, count)
+
+            # 修改set里面的sku_id
+            # 因为前后端约定购物车修改的数据传入的规则是幂等的，所以后端不需要判断sku_id是否存在，直接覆盖写入
+            if selected:
+                pl.sadd('selected_%s' % user.id, sku_id)
+            else:
+                pl.srem('selected_%s' % user.id, sku_id)
+
+            # 记得执行
+            pl.execute()
+
+            # 响应
+            return Response(serializer.data)
+        else:
+            # 如果是未登录用户，存储购物车到cookie
+            # 读取出cookie中原有的购物车数据
+            cookie_cart_str = request.COOKIES.get('cart')
+
+            # 判断cookie中的购物车数据是否存在，如果存在再转字典；反之，给空字典
+            if cookie_cart_str:
+                cookie_cart_str_bytes = cookie_cart_str.encode()
+                cookie_cart_dict_bytes = base64.b64decode(cookie_cart_str_bytes)
+                cookie_cart_dict = pickle.loads(cookie_cart_dict_bytes)
+            else:
+                cookie_cart_dict = {}
+
+            # 因为前后端约定购物车修改的数据传入的规则是幂等的，所以后端不需要判断sku_id是否存在，直接覆盖写入
+            cookie_cart_dict[sku_id] = {
+                'count': count,
+                'selected': selected
+            }
+
+            # 生成新的购物车字符串
+            new_cookie_cart_dict_bytes = pickle.dumps(cookie_cart_dict)
+            new_cookie_cart_str_bytes = base64.b64encode(new_cookie_cart_dict_bytes)
+            new_cookie_cart_str = new_cookie_cart_str_bytes.decode()
+
+            # 构造响应对象
+            response = Response(serializer.data)
+
+            # 将新的字典转成新的购物车字符串，写入到cookie
+            response.set_cookie('cart', new_cookie_cart_str)
+
+            # 响应
+            return response
 
     def delete(self, request):
         """删除购物车"""
