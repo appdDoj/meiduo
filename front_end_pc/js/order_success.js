@@ -24,7 +24,7 @@ var vm = new Vue({
         this.pay_method = this.get_query_string('pay');
     },
     methods: {
-        // 退出
+        // 退出N
         logout: function () {
             sessionStorage.clear();
             localStorage.clear();

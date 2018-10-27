@@ -4,7 +4,7 @@ from decimal import Decimal
 from django_redis import get_redis_connection
 
 from goods.models import SKU
-from . models import OrderInfo
+from . models import OrderInfo, OrderGoods
 
 
 class CommitOrderSerializer(serializers.ModelSerializer):
@@ -36,7 +36,7 @@ class CommitOrderSerializer(serializers.ModelSerializer):
 
         # 生成订单编号：20180802172710000000001 (年月日时分秒+用户id),用户id最多9位，不够9位补0
         # 获取当前时区的当前的时间 ： timezone.now()
-        order_id = timezone.now().strftime() + ('%09d' % user.id)
+        order_id = timezone.now().strftime('%Y%m%d%H%M%S') + ('%09d' % user.id)
 
         # 获取validated_data里面的address和pay_method
         address = validated_data.get('address')
@@ -86,21 +86,41 @@ class CommitOrderSerializer(serializers.ModelSerializer):
             sku = SKU.objects.get(id=sku_id)
 
             # 判断库存 
+            cart_sku_count = carts[sku.id]
+            if cart_sku_count > sku.stock:
+                raise serializers.ValidationError('库存不足')
 
             # 减少库存，增加销量 SKU 
+            # sku.stock = sku.stock - cart_sku_count
+            # sku.sales = sku.sales + cart_sku_count
+            sku.stock -= cart_sku_count
+            sku.sales += cart_sku_count
+            sku.save() # 同步到数据库
 
             # 修改SPU销量
+            sku.goods.sales += cart_sku_count
+            sku.goods.save() # 同步到数据库
 
             # 保存订单商品信息 OrderGoods（主体业务逻辑）
+            OrderGoods.objects.create(
+                order=order,
+                sku = sku,
+                count = cart_sku_count,
+                price = sku.price,
+            )
 
             # 累加计算总数量和总价
+            order.total_count += cart_sku_count
+            order.total_amount += (cart_sku_count * sku.price)
 
         # 最后加入邮费和保存订单信息
+        order.total_amount += order.freight
+        order.save()
 
-        # 清除购物车中已结算的商品
+        # 清除购物车中已结算的商品(暂时不做，当把订单提交做完再清空购物车，避免每次测试结束都要新加购物车)
 
         # 返回新建的资源对象
-        return 'OrderInfo()'
+        return order
 
 
 class CartSKUSerializer(serializers.ModelSerializer):
