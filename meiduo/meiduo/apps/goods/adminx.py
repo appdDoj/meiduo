@@ -21,13 +21,18 @@ class GlobalSettings(object):
 xadmin.site.register(views.CommAdminView, GlobalSettings)
 
 
+class SKUAdmin(object):
+    model_icon = 'fa fa-gift' # 模型类的小图标
+    list_display = ['id', 'name', 'price', 'stock', 'sales', 'comments'] # 指定要展示的列
+
+
 xadmin.site.register(models.GoodsCategory)
 xadmin.site.register(models.GoodsChannel)
 xadmin.site.register(models.Goods)
 xadmin.site.register(models.Brand)
 xadmin.site.register(models.GoodsSpecification)
 xadmin.site.register(models.SpecificationOption)
-xadmin.site.register(models.SKU)
+xadmin.site.register(models.SKU, SKUAdmin)
 xadmin.site.register(models.SKUSpecification)
 xadmin.site.register(models.SKUImage)
 
@@ -37,3 +42,9 @@ xadmin.site.register(models.SKUImage)
 
 # django的admin站点的语法
 # admin.site.register(models.SKU)
+
+
+# class SKUAdmin(admin.ModelAdmin):
+#     model_icon = 'fa fa-gift'
+#     list_display = ['id', 'name', 'price', 'stock', 'sales', 'comments']
+s
