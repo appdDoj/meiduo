@@ -63,7 +63,7 @@ var vm = new Vue({
         this.get_cart();
     },
     methods: {
-        logout(){
+        logout:function(){
             sessionStorage.clear();
             localStorage.clear();
             location.href = '/login.html';

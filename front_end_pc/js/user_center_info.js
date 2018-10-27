@@ -1,7 +1,7 @@
 var vm = new Vue({
     el: '#app',
     data: {
-        host:host,
+        host,
         user_id: sessionStorage.user_id || localStorage.user_id,
         token: sessionStorage.token || localStorage.token,
         username: '',
@@ -13,7 +13,7 @@ var vm = new Vue({
         send_email_tip: '重新发送验证邮件',
         email_error: false,
 
-        histories: [] ,// 存储后端响应的浏览记录列表
+        histories: [] // 存储后端响应的浏览记录列表
     },
     mounted: function(){
         // 判断用户的登录状态
@@ -32,7 +32,6 @@ var vm = new Vue({
                     this.mobile = response.data.mobile;
                     this.email = response.data.email;
                     this.email_active = response.data.email_active;
-                })
 
                     // 补充请求浏览历史
                     axios.get(this.host + '/browse_histories/', {
@@ -49,7 +48,7 @@ var vm = new Vue({
                         })
                     })
                 .catch(error => {
-                    if (error.response.status==4N01 || error.response.status==403) {
+                    if (error.response.status==401 || error.response.status==403) {
                         location.href = '/login.html?next=/user_center_info.html';
                     }
                 });
@@ -66,7 +65,29 @@ var vm = new Vue({
         },
         // 保存email
         save_email: function(){
-
+            var re = /^[a-z0-9][\w\.\-]*@[a-z0-9\-]+(\.[a-z]{2,5}){1,2}$/;
+            if(re.test(this.email)) {
+                this.email_error = false;
+            } else {
+                this.email_error = true;
+                return;
+            }
+            axios.put(this.host + '/email/',
+                { email: this.email },
+                {
+                    headers: {
+                        'Authorization': 'JWT ' + this.token
+                    },
+                    responseType: 'json'
+                })
+                .then(response => {
+                    this.set_email = false;
+                    this.send_email_btn_disabled = true;
+                    this.send_email_tip = '已发送验证邮件'
+                })
+                .catch(error => {
+                    alert(error.data);
+                });
         }
     }
 });
