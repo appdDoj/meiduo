@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'areas.apps.AreasConfig', # 省市区
     'goods.apps.GoodsConfig', # 商品
     'contents.apps.ContentsConfig', # 主页广告
+    'orders.apps.OrdersConfig', # 订单模块
 ]
 
 MIDDLEWARE = [
