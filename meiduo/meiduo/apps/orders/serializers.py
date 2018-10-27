@@ -90,38 +90,69 @@ class CommitOrderSerializer(serializers.ModelSerializer):
 
                 # 遍历购物车中被勾选的商品信息
                 for sku_id in sku_ids:
-                    # 获取sku对象
-                    sku = SKU.objects.get(id=sku_id)
 
-                    # 判断库存 
-                    cart_sku_count = carts[sku.id]
-                    if cart_sku_count > sku.stock:
-                        # 出错就回滚到save_id
-                        transaction.savepoint_rollback(save_id)
-                        raise serializers.ValidationError('库存不足')
+                    # 循环的下单
+                    while True:
 
-                    # 减少库存，增加销量 SKU 
-                    # sku.stock = sku.stock - cart_sku_count
-                    # sku.sales = sku.sales + cart_sku_count
-                    sku.stock -= cart_sku_count
-                    sku.sales += cart_sku_count
-                    sku.save() # 同步到数据库
+                        # 获取sku对象
+                        sku = SKU.objects.get(id=sku_id)
 
-                    # 修改SPU销量
-                    sku.goods.sales += cart_sku_count
-                    sku.goods.save() # 同步到数据库
+                        # 记录原始库存和销量
+                        origin_stock = sku.stock  # 原始库存5，用户买一件
+                        origin_sales = sku.sales
 
-                    # 保存订单商品信息 OrderGoods（主体业务逻辑）
-                    OrderGoods.objects.create(
-                        order=order,
-                        sku = sku,
-                        count = cart_sku_count,
-                        price = sku.price,
-                    )
+                        # 判断库存 
+                        cart_sku_count = carts[sku.id]
+                        if cart_sku_count > origin_stock:
+                            # 出错就回滚到save_id
+                            transaction.savepoint_rollback(save_id)
+                            raise serializers.ValidationError('库存不足')
 
-                    # 累加计算总数量和总价
-                    order.total_count += cart_sku_count
-                    order.total_amount += (cart_sku_count * sku.price)
+                        # 模拟网络延迟
+                        import time
+                        time.sleep(5)
+
+                        # 减少库存，增加销量 SKU 
+                        # sku.stock = sku.stock - cart_sku_count
+                        # sku.sales = sku.sales + cart_sku_count
+                        # sku.stock -= cart_sku_count
+                        # sku.sales += cart_sku_count
+                        # sku.save() # 同步到数据库
+
+                        # 计算新的库存和新的销量
+                        new_stock = origin_stock - cart_sku_count
+                        new_sales = origin_sales + cart_sku_count
+
+                        # 使用乐观锁跟新库存和销量
+                        # 在跟新库存和销量之前，判断库存是否和原始库存一致，如果一致，直接跟新.
+                        result = SKU.objects.filter(id=sku_id, stock=origin_stock).update(stock=new_stock, sales=new_sales)
+                        if result == 0:
+                            # 当发现库存有变化，继续下单
+                            continue
+
+                        # """
+                        # 下单成功的条件：
+                        # 读取的原始库存没有变化，并且用户购买的数量小于商品的库存量，直到库存不足为止
+                        # """
+
+                        # 修改SPU销量
+                        sku.goods.sales += cart_sku_count
+                        sku.goods.save() # 同步到数据库
+
+                        # 保存订单商品信息 OrderGoods（主体业务逻辑）
+                        OrderGoods.objects.create(
+                            order=order,
+                            sku = sku,
+                            count = cart_sku_count,
+                            price = sku.price,
+                        )
+
+                        # 累加计算总数量和总价
+                        order.total_count += cart_sku_count
+                        order.total_amount += (cart_sku_count * sku.price)
+
+                        # 第一次下单就买到了
+                        break
 
                 # 最后加入邮费和保存订单信息
                 order.total_amount += order.freight
