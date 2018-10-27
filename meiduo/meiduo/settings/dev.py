@@ -112,8 +112,21 @@ DATABASES = {
         'PORT': 3306,
         'USER': 'meiduo_sz18',
         'PASSWORD': 'meiduo',
+    },
+    'slave': {
+        'ENGINE': 'django.db.backends.mysql',
+        'HOST': '192.168.103.132',  # 数据库主机
+        'PORT': 8306,  # 数据库端口
+        'USER': 'root',  # 数据库用户名
+        'PASSWORD': 'mysql',  # 数据库用户密码
+        'NAME': 'meiduo_mall_04'  # 数据库名字
     }
 }
+
+
+# 配置读写分离
+DATABASE_ROUTERS = ['meiduo_mall.utils.db_router.MasterSlaveDBRouter']
+
 
 
 # Password validation
