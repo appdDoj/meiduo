@@ -27,6 +27,29 @@ class CommitOrderSerializer(serializers.ModelSerializer):
         为了能够自己写代码按照需求保存订单基本信息和订单商品信息
         """
 
+        # 获取当前保存订单时需要的信息
+
+        # 保存订单基本信息 OrderInfo（主体业务逻辑）
+
+        # 从redis读取购物车中被勾选的商品信息
+
+        # 遍历购物车中被勾选的商品信息
+            # 获取sku对象
+
+            # 判断库存 
+
+            # 减少库存，增加销量 SKU 
+
+            # 修改SPU销量
+
+            # 保存订单商品信息 OrderGoods（主体业务逻辑）
+
+            # 累加计算总数量和总价
+
+        # 最后加入邮费和保存订单信息
+
+        # 清除购物车中已结算的商品
+
         # 返回新建的资源对象
         return 'OrderInfo()'
 
