@@ -6,7 +6,7 @@
     ./regenerate_index_html.py
 """
 import sys
-# .../meiduo_t/meiduo_mall
+# .../meiduo/meiduo
 
 sys.path.insert(0, '../')
 print(sys.path)

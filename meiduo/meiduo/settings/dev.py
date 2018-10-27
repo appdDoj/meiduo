@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'goods.apps.GoodsConfig', # 商品
     'contents.apps.ContentsConfig', # 主页广告
     'orders.apps.OrdersConfig', # 订单模块
+    'payment.apps.PaymentConfig', # 支付模块
 ]
 
 MIDDLEWARE = [
