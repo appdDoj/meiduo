@@ -36,4 +36,6 @@ urlpatterns = [
     url(r'^', include('carts.urls')),
     # orders
     url(r'^', include('orders.urls')),
+    # payment
+    url(r'^', include('payment.urls')),
 ]
