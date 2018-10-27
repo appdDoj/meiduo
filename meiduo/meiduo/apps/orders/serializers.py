@@ -3,6 +3,11 @@ from rest_framework import serializers
 from goods.models import SKU
 
 
+class CommitOrderSerializer(serializers.ModelSerializer):
+    """提交订单序列化器"""
+    pass
+
+
 class CartSKUSerializer(serializers.ModelSerializer):
     """
     购物车商品数据序列化器

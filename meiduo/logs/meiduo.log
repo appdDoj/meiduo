@@ -1406,3 +1406,81 @@ INFO 2018-10-26 22:54:41,729 basehttp 124 "GET /static/rest_framework/js/default
 INFO 2018-10-26 22:54:43,894 basehttp 124 "GET /skus/search/?text=%E6%89%8B%E6%9C%BA&page=1&page_size=6 HTTP/1.1" 200 52
 INFO 2018-10-26 23:02:32,218 basehttp 124 "GET /skus/search/?text=%E6%89%8B%E6%9C%BA&page=1&page_size=6 HTTP/1.1" 200 52
 INFO 2018-10-26 23:11:06,973 basehttp 124 "GET /skus/search/?text=%E6%89%8B%E6%9C%BA&page=1&page_size=6 HTTP/1.1" 200 52
+INFO 2018-10-27 09:53:35,146 basehttp 124 "OPTIONS /authorizations/ HTTP/1.1" 200 0
+INFO 2018-10-27 09:53:35,457 basehttp 124 "POST /authorizations/ HTTP/1.1" 200 204
+INFO 2018-10-27 09:53:42,786 basehttp 124 "OPTIONS /cart/ HTTP/1.1" 200 0
+INFO 2018-10-27 09:53:42,965 basehttp 124 "GET /cart/ HTTP/1.1" 200 2
+INFO 2018-10-27 09:53:53,110 basehttp 124 "GET /cart/ HTTP/1.1" 200 2
+INFO 2018-10-27 09:53:55,892 basehttp 124 "OPTIONS /user/ HTTP/1.1" 200 0
+INFO 2018-10-27 09:53:56,037 basehttp 124 "GET /user/ HTTP/1.1" 200 82
+INFO 2018-10-27 09:53:56,045 basehttp 124 "OPTIONS /browse_histories/ HTTP/1.1" 200 0
+INFO 2018-10-27 09:53:56,091 basehttp 124 "GET /browse_histories/ HTTP/1.1" 200 2
+WARNING 2018-10-27 09:54:08,238 base 152 Not Found: /categories/115/hotskus/
+WARNING 2018-10-27 09:54:08,243 base 152 Not Found: /categories/115/
+WARNING 2018-10-27 09:54:08,263 basehttp 124 "GET /categories/115/ HTTP/1.1" 404 9339
+WARNING 2018-10-27 09:54:08,278 basehttp 124 "GET /categories/115/hotskus/ HTTP/1.1" 404 9363
+INFO 2018-10-27 09:54:08,296 basehttp 124 "GET /cart/ HTTP/1.1" 200 2
+INFO 2018-10-27 09:54:08,320 basehttp 124 "GET /categories/115/skus/?page=1&page_size=5&ordering=-create_time HTTP/1.1" 200 1321
+INFO 2018-10-27 09:54:10,713 basehttp 124 "POST /browse_histories/ HTTP/1.1" 201 13
+INFO 2018-10-27 09:54:10,717 basehttp 124 "POST /browse_histories/ HTTP/1.1" 201 13
+INFO 2018-10-27 09:54:16,798 basehttp 124 "POST /cart/ HTTP/1.1" 201 39
+INFO 2018-10-27 09:54:22,825 basehttp 124 "GET /cart/ HTTP/1.1" 200 250
+WARNING 2018-10-27 09:54:49,974 base 152 Not Found: /categories/115/
+WARNING 2018-10-27 09:54:50,001 basehttp 124 "GET /categories/115/ HTTP/1.1" 404 9339
+WARNING 2018-10-27 09:54:50,034 base 152 Not Found: /categories/115/hotskus/
+WARNING 2018-10-27 09:54:50,039 basehttp 124 "GET /categories/115/hotskus/ HTTP/1.1" 404 9363
+INFO 2018-10-27 09:54:50,100 basehttp 124 "GET /categories/115/skus/?page=1&page_size=5&ordering=-create_time HTTP/1.1" 200 1321
+INFO 2018-10-27 09:54:50,101 basehttp 124 "GET /cart/ HTTP/1.1" 200 250
+INFO 2018-10-27 09:55:01,597 basehttp 124 "OPTIONS /cart/ HTTP/1.1" 200 0
+WARNING 2018-10-27 09:55:01,632 base 152 Not Found: /categories/116/
+WARNING 2018-10-27 09:55:01,637 base 152 Not Found: /categories/116/hotskus/
+WARNING 2018-10-27 09:55:01,639 basehttp 124 "GET /categories/116/hotskus/ HTTP/1.1" 404 9363
+WARNING 2018-10-27 09:55:01,645 basehttp 124 "GET /categories/116/ HTTP/1.1" 404 9339
+INFO 2018-10-27 09:55:01,715 basehttp 124 "GET /cart/ HTTP/1.1" 200 2
+INFO 2018-10-27 09:55:01,803 basehttp 124 "GET /categories/116/skus/?page=1&page_size=5&ordering=-create_time HTTP/1.1" 200 52
+WARNING 2018-10-27 09:55:07,422 base 152 Not Found: /categories/119/
+WARNING 2018-10-27 09:55:07,448 basehttp 124 "GET /categories/119/ HTTP/1.1" 404 9339
+WARNING 2018-10-27 09:55:07,473 base 152 Not Found: /categories/119/hotskus/
+WARNING 2018-10-27 09:55:07,478 basehttp 124 "GET /categories/119/hotskus/ HTTP/1.1" 404 9363
+INFO 2018-10-27 09:55:07,485 basehttp 124 "GET /cart/ HTTP/1.1" 200 2
+INFO 2018-10-27 09:55:07,491 basehttp 124 "GET /categories/119/skus/?page=1&page_size=5&ordering=-create_time HTTP/1.1" 200 52
+WARNING 2018-10-27 09:55:11,459 base 152 Not Found: /categories/115/
+WARNING 2018-10-27 09:55:11,470 base 152 Not Found: /categories/115/hotskus/
+WARNING 2018-10-27 09:55:11,477 basehttp 124 "GET /categories/115/ HTTP/1.1" 404 9339
+WARNING 2018-10-27 09:55:11,483 basehttp 124 "GET /categories/115/hotskus/ HTTP/1.1" 404 9363
+INFO 2018-10-27 09:55:11,489 basehttp 124 "GET /cart/ HTTP/1.1" 200 2
+INFO 2018-10-27 09:55:11,527 basehttp 124 "GET /categories/115/skus/?page=1&page_size=5&ordering=-create_time HTTP/1.1" 200 1321
+INFO 2018-10-27 09:55:13,113 basehttp 124 "GET /categories/115/skus/?page=1&page_size=5&ordering=price HTTP/1.1" 200 1312
+INFO 2018-10-27 09:55:13,801 basehttp 124 "GET /categories/115/skus/?page=1&page_size=5&ordering=sales HTTP/1.1" 200 1270
+INFO 2018-10-27 09:55:14,632 basehttp 124 "GET /categories/115/skus/?page=1&page_size=5&ordering=price HTTP/1.1" 200 1312
+INFO 2018-10-27 09:55:14,887 basehttp 124 "GET /categories/115/skus/?page=1&page_size=5&ordering=-create_time HTTP/1.1" 200 1321
+INFO 2018-10-27 09:55:21,279 basehttp 124 "OPTIONS /cart/ HTTP/1.1" 200 0
+WARNING 2018-10-27 09:55:21,319 basehttp 124 "POST /cart/ HTTP/1.1" 400 37
+INFO 2018-10-27 09:55:30,305 basehttp 124 "OPTIONS /cart/ HTTP/1.1" 200 0
+WARNING 2018-10-27 09:55:30,324 base 152 Not Found: /categories/115/
+WARNING 2018-10-27 09:55:30,341 basehttp 124 "GET /categories/115/ HTTP/1.1" 404 9339
+WARNING 2018-10-27 09:55:30,363 base 152 Not Found: /categories/115/hotskus/
+WARNING 2018-10-27 09:55:30,364 basehttp 124 "GET /categories/115/hotskus/ HTTP/1.1" 404 9363
+INFO 2018-10-27 09:55:30,407 basehttp 124 "GET /categories/115/skus/?page=1&page_size=5&ordering=-create_time HTTP/1.1" 200 1321
+INFO 2018-10-27 09:55:30,552 basehttp 124 "GET /cart/ HTTP/1.1" 200 2
+INFO 2018-10-27 09:55:36,164 basehttp 124 "OPTIONS /cart/ HTTP/1.1" 200 0
+INFO 2018-10-27 09:55:36,200 basehttp 124 "POST /cart/ HTTP/1.1" 201 39
+INFO 2018-10-27 09:55:45,004 basehttp 124 "OPTIONS /cart/ HTTP/1.1" 200 0
+INFO 2018-10-27 09:55:45,078 basehttp 124 "POST /cart/ HTTP/1.1" 201 39
+INFO 2018-10-27 09:55:52,507 basehttp 124 "GET /cart/ HTTP/1.1" 200 499
+INFO 2018-10-27 09:56:22,348 basehttp 124 "OPTIONS /authorizations/ HTTP/1.1" 200 0
+INFO 2018-10-27 09:56:22,492 basehttp 124 "POST /authorizations/ HTTP/1.1" 200 204
+INFO 2018-10-27 09:56:26,408 basehttp 124 "GET /cart/ HTTP/1.1" 200 499
+INFO 2018-10-27 09:56:31,354 basehttp 124 "OPTIONS /user/ HTTP/1.1" 200 0
+INFO 2018-10-27 09:56:31,459 basehttp 124 "GET /user/ HTTP/1.1" 200 82
+INFO 2018-10-27 09:56:31,479 basehttp 124 "OPTIONS /browse_histories/ HTTP/1.1" 200 0
+INFO 2018-10-27 09:56:31,548 basehttp 124 "GET /browse_histories/ HTTP/1.1" 200 237
+INFO 2018-10-27 09:56:36,270 basehttp 124 "OPTIONS /addresses/ HTTP/1.1" 200 0
+INFO 2018-10-27 09:56:36,369 basehttp 124 "GET /areas/ HTTP/1.1" 200 1204
+INFO 2018-10-27 09:56:36,400 basehttp 124 "GET /addresses/ HTTP/1.1" 200 330
+INFO 2018-10-27 09:56:40,411 basehttp 124 "GET /areas/ HTTP/1.1" 200 1204
+INFO 2018-10-27 09:56:40,498 basehttp 124 "GET /addresses/ HTTP/1.1" 200 330
+INFO 2018-10-27 09:56:43,706 basehttp 124 "GET /user/ HTTP/1.1" 200 82
+INFO 2018-10-27 09:56:43,814 basehttp 124 "GET /browse_histories/ HTTP/1.1" 200 237
+INFO 2018-10-27 09:56:48,308 basehttp 124 "GET /cart/ HTTP/1.1" 200 499
+INFO 2018-10-27 09:57:02,032 basehttp 124 "GET /cart/ HTTP/1.1" 200 499

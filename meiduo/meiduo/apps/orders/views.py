@@ -4,10 +4,22 @@ from rest_framework.permissions import IsAuthenticated
 from django_redis import get_redis_connection
 from decimal import Decimal
 from rest_framework.response import Response
+from rest_framework.generics import CreateAPIView
 
 from goods.models import SKU
 from . import serializers
 # Create your views here.
+
+
+class CommitOrderView(CreateAPIView):
+    """提交订单"""
+
+    # 必须登录用户才能访问
+    permission_classes = [IsAuthenticated]
+
+    # 指定序列化器
+    serializer_class = serializers.CommitOrderSerializer
+
 
 
 class OrderSettlementView(APIView):
