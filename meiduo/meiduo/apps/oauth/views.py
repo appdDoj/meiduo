@@ -9,6 +9,7 @@ from .utils import OAuthQQ
 from .exceptions import QQAPIException
 from .models import OAuthQQUser
 from . import serializers
+from carts.utils import merge_cart_cookie_to_redis
 # Create your views here.
 
 
@@ -71,6 +72,9 @@ class QQAuthUserView(GenericAPIView):
             # JWT token
             token = jwt_encode_handler(payload)
 
+            # 合并cookie中的购物车数据到redis
+            merge_cart_cookie_to_redis()
+
             # 响应数据
             return Response({
                 'token':token,
@@ -93,6 +97,8 @@ class QQAuthUserView(GenericAPIView):
         jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
         payload = jwt_payload_handler(user)
         token = jwt_encode_handler(payload)
+
+        # 合并cookie中的购物车数据到redis
 
         return Response({
             'token': token,
