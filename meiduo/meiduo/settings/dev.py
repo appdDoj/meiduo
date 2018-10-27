@@ -55,6 +55,10 @@ INSTALLED_APPS = [
     'ckeditor_uploader',  # 富文本编辑器上传图片模块
     'django_crontab',  # 定时任务
     'haystack', # 对接搜索引擎
+    # 以下是注册xadmin
+    'xadmin',
+    'crispy_forms',
+    'reversion',
 
     'users.apps.UsersConfig', # 注册用户模块,为了适应AUTH_USER_MODEL，所以需要在注册时以users开头
     'oauth.apps.OauthConfig', # 第三方登录
@@ -341,7 +345,6 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 
-# 当添加、修改、删除数据时，自动生成索引
 # 当添加、修改、删除数据时，自动生成索引
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
