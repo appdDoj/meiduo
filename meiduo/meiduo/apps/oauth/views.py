@@ -72,15 +72,17 @@ class QQAuthUserView(GenericAPIView):
             # JWT token
             token = jwt_encode_handler(payload)
 
-            # 合并cookie中的购物车数据到redis
-            merge_cart_cookie_to_redis()
-
-            # 响应数据
-            return Response({
+            response = Response({
                 'token':token,
                 'user_id':user.id,
                 'username':user.username
             })
+
+            # 合并cookie中的购物车数据到redis
+            response = merge_cart_cookie_to_redis(request=request, user=user, response=response)
+
+            # 响应数据
+            return response
 
     def post(self, request):
         """openid绑定用户"""
@@ -98,13 +100,17 @@ class QQAuthUserView(GenericAPIView):
         payload = jwt_payload_handler(user)
         token = jwt_encode_handler(payload)
 
-        # 合并cookie中的购物车数据到redis
-
-        return Response({
+        response = Response({
             'token': token,
-            'username': user.username,
-            'user_id': user.id
+            'user_id': user.id,
+            'username': user.username
         })
+
+        # 合并cookie中的购物车数据到redis
+        response = merge_cart_cookie_to_redis(request=request, user=user, response=response)
+
+        # 响应数据
+        return response
 
 
 # url(r'^qq/authorization/$', views.QQAuthURLView.as_view()),
