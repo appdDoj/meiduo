@@ -109,8 +109,8 @@ class CommitOrderSerializer(serializers.ModelSerializer):
                             raise serializers.ValidationError('库存不足')
 
                         # 模拟网络延迟
-                        import time
-                        time.sleep(5)
+                        # import time
+                        # time.sleep(5)
 
                         # 减少库存，增加销量 SKU 
                         # sku.stock = sku.stock - cart_sku_count
@@ -170,7 +170,11 @@ class CommitOrderSerializer(serializers.ModelSerializer):
             # 能够执行到这里说明mysql操作没错，直接提交
             transaction.savepoint_commit(save_id)
 
-        # 清除购物车中已结算的商品(暂时不做，当把订单提交做完再清空购物车，避免每次测试结束都要新加购物车)
+        # 清除购物车中已结算的商品，被勾选的那些
+        pl = redis_conn.pipeline()
+        pl.hdel('cart_%s' % user.id, *redis_cart_selected)
+        pl.srem('selected_%s' % user.id, *redis_cart_selected)
+        pl.execute()
 
         # 返回新建的资源对象
         return order
