@@ -1,5 +1,5 @@
 from django.db import models
-from meiduo.utils.models import BaseModel
+from meiduo_mall.utils.models import BaseModel
 from users.models import User, Address
 from goods.models import SKU
 
@@ -67,6 +67,8 @@ class OrderGoods(BaseModel):
     order = models.ForeignKey(OrderInfo, related_name='skus', on_delete=models.CASCADE, verbose_name="订单")
     sku = models.ForeignKey(SKU, on_delete=models.PROTECT, verbose_name="订单商品")
     count = models.IntegerField(default=1, verbose_name="数量")
+    # 总位数是10位数。小数占2两位
+    # 100.23 -->  100   23   --> 100.23
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="单价")
     comment = models.TextField(default="", verbose_name="评价信息")
     score = models.SmallIntegerField(choices=SCORE_CHOICES, default=5, verbose_name='满意度评分')
@@ -77,3 +79,21 @@ class OrderGoods(BaseModel):
         db_table = "tb_order_goods"
         verbose_name = '订单商品'
         verbose_name_plural = verbose_name
+
+
+# """
+# 1.23   float  存储: 123 * 10^-2  读取: 1.2299999999999
+#
+# 1.23  Decimal  存储: 1 23  读取: 先读前面的整数，再读后面的整数，最后使用'.'将前后的整数连接一起
+# """
+
+
+
+
+
+
+
+
+
+
+
