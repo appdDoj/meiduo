@@ -254,4 +254,66 @@ class CartView(APIView):
 
     def delete(self, request):
         """删除购物车"""
-        pass
+        # 创建序列化器对象
+        serializer = serializers.CartDeleteSerializer(data=request.data)
+        # 校验参数
+        serializer.is_valid(raise_exception=True)
+
+        sku_id = serializer.validated_data.get('sku_id')
+
+        # 判断用户是否登录
+        try:
+            user = request.user
+        except Exception:
+            user = None
+
+        if user is not None and user.is_authenticated:
+            # 如果是已登录用户，存储购物车到redis
+            # 创建连接到redis的对象
+            redis_conn = get_redis_connection('cart')
+
+            # 管道
+            pl = redis_conn.pipeline()
+
+            # 删除hash里面的sku_id和count对应的一条记录
+            pl.hdel('cart_%s' % user.id, sku_id)
+
+            # 删除set里面的sku_id
+            pl.srem('selected_%s' % user.id, sku_id)
+
+            # 记住执行
+            pl.execute()
+
+            # 响应
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            # 如果是未登录用户，存储购物车到cookie
+            # 读取出cookie中原有的购物车数据
+            cookie_cart_str = request.COOKIES.get('cart')
+
+            # 判断cookie中的购物车数据是否存在，如果存在再转字典；反之，给空字典
+            if cookie_cart_str:
+                cookie_cart_str_bytes = cookie_cart_str.encode()
+                cookie_cart_dict_bytes = base64.b64decode(cookie_cart_str_bytes)
+                cookie_cart_dict = pickle.loads(cookie_cart_dict_bytes)
+            else:
+                cookie_cart_dict = {}
+
+            # 构造响应对象
+            response = Response(status=status.HTTP_204_NO_CONTENT)
+
+            # 删除指定的sku_id对应的记录
+            if sku_id in cookie_cart_dict:
+                del cookie_cart_dict[sku_id]
+
+                # 生成新的购物车字符串
+                new_cookie_cart_dict_bytes = pickle.dumps(cookie_cart_dict)
+                new_cookie_cart_str_bytes = base64.b64encode(new_cookie_cart_dict_bytes)
+                new_cookie_cart_str = new_cookie_cart_str_bytes.decode()
+
+                # 将新的字典转成新的购物车字符串，写入到cookie
+                response.set_cookie('cart', new_cookie_cart_str)
+
+            # 响应
+            return response
+

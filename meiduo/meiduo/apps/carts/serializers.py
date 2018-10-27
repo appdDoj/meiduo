@@ -3,6 +3,21 @@ from rest_framework import serializers
 from goods.models import SKU
 
 
+class CartDeleteSerializer(serializers.Serializer):
+    """
+    删除购物车数据序列化器
+    """
+    sku_id = serializers.IntegerField(label='商品id', min_value=1)
+
+    def validate_sku_id(self, value):
+        try:
+            sku = SKU.objects.get(id=value)
+        except SKU.DoesNotExist:
+            raise serializers.ValidationError('商品不存在')
+
+        return value
+
+
 class CartSKUSerializer(serializers.ModelSerializer):
     """
     购物车商品数据序列化器
