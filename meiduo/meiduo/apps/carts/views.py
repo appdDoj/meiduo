@@ -1,5 +1,8 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
+from django_redis import get_redis_connection
+from rest_framework.response import Response
+from rest_framework import status
 
 from . import serializers
 
@@ -42,7 +45,26 @@ class CartView(APIView):
 
         if user is not None and user.is_authenticated:
             # 如果是已登录用户，存储购物车到redis
-            pass
+            # 创建连接到redis的对象
+            redis_conn = get_redis_connection('cart')
+
+            # 管道
+            pl = redis_conn.pipeline()
+
+            # 将sku_id和count写入到hash
+            # hincrby ：自动实现自增量，会自动的判断sku_id，是否已经存在，如果存在就使用count累加原有值；反之，就赋新值
+            # redis_conn.hincrby('cart_%s' % user.id, sku_id, count)
+            pl.hincrby('cart_%s' % user.id, sku_id, count)
+
+            # 将sku_id写入到set
+            # redis_conn.sadd('selected_%s' % user.id, sku_id)
+            pl.sadd('selected_%s' % user.id, sku_id)
+
+            # 记住要execute
+            pl.execute()
+
+            # 响应:序列化之后的结果
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             # 如果是未登录用户，存储购物车到cookie
             pass
