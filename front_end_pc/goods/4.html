@@ -1,93 +1,78 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-    <title>美多商城-商品详情</title>
-    <link rel="stylesheet" type="text/css" href="/css/reset.css">
-    <link rel="stylesheet" type="text/css" href="/css/main.css">
-    <script type="text/javascript" src="/js/host.js"></script>
-    <script type="text/javascript" src="/js/vue-2.5.16.js"></script>
-    <script type="text/javascript" src="/js/axios-0.18.0.min.js"></script>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>美多商城-商品详情</title>
+	<link rel="stylesheet" type="text/css" href="/css/reset.css">
+	<link rel="stylesheet" type="text/css" href="/css/main.css">
+	<script type="text/javascript" src="/js/host.js"></script>
+	<script type="text/javascript" src="/js/vue-2.5.16.js"></script>
+	<script type="text/javascript" src="/js/axios-0.18.0.min.js"></script>
 </head>
 <body>
-    <div id="app" v-cloak>
-    <div class="header_con">
-        <div class="header">
-            <div class="welcome fl">欢迎来到美多商城!</div>
-            <div class="fr">
-                <div v-if="username" class="login_btn fl">
-                    欢迎您：<em>[[ username ]]</em>
-                    <span>|</span>
-                    <a @click="logout">退出</a>
-                </div>
-                <div v-else class="login_btn fl">
-                    <a href="login.html">登录</a>
-                    <span>|</span>
-                    <a href="register.html">注册</a>
-                </div>
-                <div class="user_link fl">
-                    <span>|</span>
-                    <a href="/user_center_info.html">用户中心</a>
-                    <span>|</span>
-                    <a href="/cart.html">我的购物车</a>
-                    <span>|</span>
-                    <a href="/user_center_order.html">我的订单</a>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div id="app" v-cloak>
+	<div class="header_con">
+		<div class="header">
+			<div class="welcome fl">欢迎来到美多商城!</div>
+			<div class="fr">
+				<div v-if="username" class="login_btn fl">
+					欢迎您：<em>[[ username ]]</em>
+					<span>|</span>
+					<a @click="logout">退出</a>
+				</div>
+				<div v-else class="login_btn fl">
+					<a href="login.html">登录</a>
+					<span>|</span>
+					<a href="register.html">注册</a>
+				</div>
+				<div class="user_link fl">
+					<span>|</span>
+					<a href="/user_center_info.html">用户中心</a>
+					<span>|</span>
+					<a href="/cart.html">我的购物车</a>
+					<span>|</span>
+					<a href="/user_center_order.html">我的订单</a>
+				</div>
+			</div>
+		</div>
+	</div>
 
-    <div class="search_bar clearfix">
-            <a href="/index.html" class="logo fl"><img src="/images/logo.png"></a>
-            <div class="search_wrap fl">
-                <form method="get" action="/search.html" class="search_con">
+	<div class="search_bar clearfix">
+			<a href="/index.html" class="logo fl"><img src="/images/logo.png"></a>
+			<div class="search_wrap fl">
+				<form method="get" action="/search.html" class="search_con">
                     <input type="text" class="input_text fl" name="q" placeholder="搜索商品">
                     <input type="submit" class="input_btn fr" name="" value="搜索">
                 </form>
-                <ul class="search_suggest fl">
-                    <li><a href="#">索尼微单</a></li>
-                    <li><a href="#">优惠15元</a></li>
-                    <li><a href="#">美妆个护</a></li>
-                    <li><a href="#">买2免1</a></li>
-                </ul>
-            </div>
+				<ul class="search_suggest fl">
+					<li><a href="#">索尼微单</a></li>
+					<li><a href="#">优惠15元</a></li>
+					<li><a href="#">美妆个护</a></li>
+					<li><a href="#">买2免1</a></li>
+				</ul>
+			</div>
 
-            <div class="guest_cart fr">
-            <a href="#" class="cart_name fl">我的购物车</a>
-            <div class="goods_count fl" id="show_count">15</div>
+			<div @mouseenter="get_cart()" class="guest_cart fr">
+				<a href="#" class="cart_name fl">我的购物车</a>
+				<div class="goods_count fl" id="show_count">[[cart_total_count]]</div>
 
-            <ul class="cart_goods_show">
-                <li>
-                    <img src="images/goods/goods001.jpg" alt="商品图片">
-                    <h4>商品名称手机</h4>
-                    <div>4</div>
-                </li>
-                <li>
-                    <img src="images/goods/goods002.jpg" alt="商品图片">
-                    <h4>商品名称手机</h4>
-                    <div>5</div>
-                </li>
-                <li>
-                    <img src="images/goods/goods003.jpg" alt="商品图片">
-                    <h4>商品名称手机</h4>
-                    <div>6</div>
-                </li>
-                <li>
-                    <img src="images/goods/goods003.jpg" alt="商品图片">
-                    <h4>商品名称手机</h4>
-                    <div>6</div>
-                </li>
-            </ul>
-        </div>
+				<ul class="cart_goods_show">
+					<li v-for="sku in cart">
+						<img :src="sku.default_image_url" alt="商品图片">
+						<h4>[[sku.name]]</h4>
+						<div>[[sku.count]]</div>
+					</li>
+				</ul>
+			</div>
 
-        </div>
+		</div>
 
-        <div class="navbar_con">
-                <div class="navbar">
-                    <div class="sub_menu_con fl">
-                        <h1 class="fl">商品分类</h1>
-                        <ul class="sub_menu">
-                            
+		<div class="navbar_con">
+				<div class="navbar">
+					<div class="sub_menu_con fl">
+						<h1 class="fl">商品分类</h1>
+						<ul class="sub_menu">
+							
                             <li>
                                 <div class="level1">
                                     
@@ -1650,140 +1635,140 @@
                                 </div>
                             </li>
                             
-                        </ul>
-                    </div>
+						</ul>
+					</div>
 
-                    <ul class="navlist fl">
-                        <li><a href="">首页</a></li>
-                        <li class="interval">|</li>
-                        <li><a href="">真划算</a></li>
-                        <li class="interval">|</li>
-                        <li><a href="">抽奖</a></li>
-                    </ul>
-                </div>
-            </div>
+					<ul class="navlist fl">
+						<li><a href="">首页</a></li>
+						<li class="interval">|</li>
+						<li><a href="">真划算</a></li>
+						<li class="interval">|</li>
+						<li><a href="">抽奖</a></li>
+					</ul>
+				</div>
+			</div>
 
-    <div class="breadcrumb">
-        <a href="http://shouji.jd.com">手机</a>
-        <span>></span>
-        <span>手机通讯</span>
-        <span>></span>
-        <a href="/list.html?cat=115">手机</a>
-    </div>
+	<div class="breadcrumb">
+		<a href="http://shouji.jd.com">手机</a>
+		<span>></span>
+		<span>手机通讯</span>
+		<span>></span>
+		<a href="/list.html?cat=115">手机</a>
+	</div>
 
-    <div class="goods_detail_con clearfix">
-        <div class="goods_detail_pic fl"><img src="http://image.meiduo.site:8888/group1/M00/00/02/CtM3BVrRZa6ANO_sAAFti6upbx40753757"></div>
-        <div class="goods_detail_list fr">
-            <h3>Apple iPhone 8 Plus (A1864) 256GB 金色 移动联通电信4G手机</h3>
-            <p>选【移动优惠购】新机配新卡，198优质靓号，流量不限量！</p>
-            <div class="prize_bar">
-                <span class="show_pirze">¥<em>7988.00</em></span><span> 市场价￥8088.00</span>
-                <a href="javascript:;" class="goods_judge">0人评价</a>
-            </div>
-            <div class="goods_num clearfix">
-                <div class="num_name fl">数 量：</div>
-                <div class="num_add fl">
-                    <input v-model="sku_count" type="text" class="num_show fl">
-                    <a @click="sku_count++" class="add fr">+</a>
-                    <a @click="on_minus()" class="minus fr">-</a>
-                </div>
-            </div>
-            
-            <div class="type_select">
-                <label>颜色:</label>
+	<div class="goods_detail_con clearfix">
+		<div class="goods_detail_pic fl"><img src="http://image.meiduo.site:8888/group1/M00/00/02/CtM3BVrRZa6ANO_sAAFti6upbx40753757"></div>
+		<div class="goods_detail_list fr">
+			<h3>Apple iPhone 8 Plus (A1864) 256GB 金色 移动联通电信4G手机</h3>
+			<p>选【移动优惠购】新机配新卡，198优质靓号，流量不限量！</p>
+			<div class="prize_bar">
+				<span class="show_pirze">¥<em>7988.00</em></span><span> 市场价￥8088.00</span>
+				<a href="javascript:;" class="goods_judge">0人评价</a>
+			</div>
+			<div class="goods_num clearfix">
+				<div class="num_name fl">数 量：</div>
+				<div class="num_add fl">
+					<input v-model="sku_count" type="text" class="num_show fl">
+					<a @click="sku_count++" class="add fr">+</a>
+					<a @click="on_minus()" class="minus fr">-</a>
+				</div>
+			</div>
+			
+			<div class="type_select">
+				<label>颜色:</label>
+				
                 
-                
-                <a href="javascript:;" class="select">金色</a>
-                
-                
-                
-                <a href="/goods/6.html">深空灰</a>
+				<a href="javascript:;" class="select">金色</a>
                 
                 
                 
-                <a href="/goods/8.html">银色</a>
+				<a href="/goods/6.html">深空灰</a>
+				
                 
                 
-            </div>
-            
-            <div class="type_select">
-                <label>内存:</label>
+				<a href="/goods/8.html">银色</a>
+				
+                
+			</div>
+			
+			<div class="type_select">
+				<label>内存:</label>
+				
+                
+				<a href="/goods/3.html">64GB</a>
+				
                 
                 
-                <a href="/goods/3.html">64GB</a>
+				<a href="javascript:;" class="select">256GB</a>
                 
                 
-                
-                <a href="javascript:;" class="select">256GB</a>
-                
-                
-            </div>
-            
-            <div class="total">总价：<em>[[sku_amount]]元</em></div>
-            <div class="operate_btn">
-                <a @click="add_cart" class="add_cart" id="add_cart">加入购物车</a>
-            </div>
-        </div>
-    </div>
+			</div>
+			
+			<div class="total">总价：<em>[[sku_amount]]元</em></div>
+			<div class="operate_btn">
+				<a @click="add_cart" class="add_cart" id="add_cart">加入购物车</a>
+			</div>
+		</div>
+	</div>
 
-    <div class="main_wrap clearfix">
-        <div class="l_wrap fl clearfix">
-            <div class="new_goods">
-                <h3>热销排行</h3>
-                <ul>
-                    <li v-for="sku in hots">
-                        <a :href="sku.url"><img :src="sku.default_image_url"></a>
-                        <h4><a :href="sku.url">[[sku.name]]</a></h4>
-                        <div class="prize">￥[[sku.price]]</div>
-                    </li>
-                </ul>
-            </div>
-        </div>
+	<div class="main_wrap clearfix">
+		<div class="l_wrap fl clearfix">
+			<div class="new_goods">
+				<h3>热销排行</h3>
+				<ul>
+					<li v-for="sku in hots">
+						<a :href="sku.url"><img :src="sku.default_image_url"></a>
+						<h4><a :href="sku.url">[[sku.name]]</a></h4>
+						<div class="prize">￥[[sku.price]]</div>
+					</li>
+				</ul>
+			</div>
+		</div>
 
-        <div class="r_wrap fr clearfix">
-            <ul class="detail_tab clearfix">
-                <li @click="on_tab_content('detail')" :class="tab_content.detail?'active':''">商品详情</li>
-                <li @click="on_tab_content('pack')" :class="tab_content.pack?'active':''">规格与包装</li>
-                <li @click="on_tab_content('comment')" :class="tab_content.comment?'active':''">商品评价([[comments.length]])</li>
-                <li @click="on_tab_content('service')" :class="tab_content.service?'active':''">售后服务</li>
-            </ul>
-            <div @click="on_tab_content('detail')" class="tab_content" :class="tab_content.detail?'current':''">
-                <dl>
-                    <dt>商品详情：</dt>
-                    <dd><p><img alt="" src="http://image.meiduo.site:8888/group1/M00/00/02/CtM3BVrRYoGAC2KAAADDtplWV_04901262" style="height:341px; width:750px" /></p>
+		<div class="r_wrap fr clearfix">
+			<ul class="detail_tab clearfix">
+				<li @click="on_tab_content('detail')" :class="tab_content.detail?'active':''">商品详情</li>
+				<li @click="on_tab_content('pack')" :class="tab_content.pack?'active':''">规格与包装</li>
+				<li @click="on_tab_content('comment')" :class="tab_content.comment?'active':''">商品评价([[comments.length]])</li>
+				<li @click="on_tab_content('service')" :class="tab_content.service?'active':''">售后服务</li>
+			</ul>
+			<div @click="on_tab_content('detail')" class="tab_content" :class="tab_content.detail?'current':''">
+				<dl>
+					<dt>商品详情：</dt>
+					<dd><p><img alt="" src="http://image.meiduo.site:8888/group1/M00/00/02/CtM3BVrRYoGAC2KAAADDtplWV_04901262" style="height:341px; width:750px" /></p>
 
 <p><img alt="" src="http://image.meiduo.site:8888/group1/M00/00/02/CtM3BVrRYpCAS9FFAADxmVbf5qw4487023" style="height:277px; width:750px" /></p>
 
 <p><img alt="" src="http://image.meiduo.site:8888/group1/M00/00/02/CtM3BVrRYp6ACUuEAAWXt1XYzNg5251947" style="height:2337px; width:750px" /></p>
 
 <p><img alt="" src="http://image.meiduo.site:8888/group1/M00/00/02/CtM3BVrRYqmANdXMAAXn26rWyDY0861997" style="height:2963px; width:750px" /></p></dd>
-                </dl>
-            </div>
-            <div @click="on_tab_content('pack')" class="tab_content" :class="tab_content.pack?'current':''">
-                <dl>
-                    <dt>规格与包装：</dt>
-                    <dd><h3>包装清单</h3>
+				</dl>
+			</div>
+			<div @click="on_tab_content('pack')" class="tab_content" :class="tab_content.pack?'current':''">
+				<dl>
+					<dt>规格与包装：</dt>
+					<dd><h3>包装清单</h3>
 
 <p>采用 Lightning 接头的 EarPods *1，iPhone *1，Lightning 至 USB 连接线*1，5W USB 电源适配器*1，Lightning 至3.5毫米耳机插孔转换器*1</p></dd>
-                </dl>
-            </div>
-            <div @click="on_tab_content('comment')" class="tab_content" :class="tab_content.comment?'current':''">
-                <ul class="judge_list_con">
-                    <li class="judge_list fl" v-for="comment in comments">
-                        <div class="user_info fl">
-                            <b>[[comment.username]]</b>
-                        </div>
-                        <div class="judge_info fl">
-                            <div :class="comment.score_class"></div>
-                            <div class="judge_detail">[[comment.comment]]</div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-            <div @click="on_tab_content('service')" class="tab_content" :class="tab_content.service?'current':''">
-                <dl>
-                    <dt>售后服务：</dt>
-                    <dd><p>&nbsp;<strong>厂家服务</strong></p>
+				</dl>
+			</div>
+			<div @click="on_tab_content('comment')" class="tab_content" :class="tab_content.comment?'current':''">
+				<ul class="judge_list_con">
+					<li class="judge_list fl" v-for="comment in comments">
+						<div class="user_info fl">
+							<b>[[comment.username]]</b>
+						</div>
+						<div class="judge_info fl">
+							<div :class="comment.score_class"></div>
+							<div class="judge_detail">[[comment.comment]]</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<div @click="on_tab_content('service')" class="tab_content" :class="tab_content.service?'current':''">
+				<dl>
+					<dt>售后服务：</dt>
+					<dd><p>&nbsp;<strong>厂家服务</strong></p>
 
 <p>本产品全国联保，享受三包服务，质保期为：一年质保<br />
 如因质量问题或故障，凭厂商维修中心或特约维修点的质量检测证明，享受7日内退货，15日内换货，15日以上在质保期内享受免费保修等三包服务！<br />
@@ -1806,33 +1791,33 @@
 <p>凭质保证书及京东商城发票，可享受全国联保服务（奢侈品、钟表除外；奢侈品、钟表由京东联系保修，享受法定三包售后服务），与您亲临商场选购的商品享受相同的质量保证。京东商城还为您提供具有竞争力的商品价格和<a href="https://help.jd.com/help/question-892.html" target="_blank">运费政策</a>，请您放心购买！&nbsp;<br />
 <br />
 注：因厂家会在没有任何提前通知的情况下更改产品包装、产地或者一些附件，本司不能确保客户收到的货物与商城图片、产地、附件说明完全一致。只能确保为原厂正货！并且保证与当时市场上同样主流新品一致。若本商城没有及时更新，请大家谅解！</p></dd>
-                </dl>
-            </div>
+				</dl>
+			</div>
 
 
 
-        </div>
-    </div>
+		</div>
+	</div>
 
-    <div class="footer">
-        <div class="foot_link">
-            <a href="#">关于我们</a>
-            <span>|</span>
-            <a href="#">联系我们</a>
-            <span>|</span>
-            <a href="#">招聘人才</a>
-            <span>|</span>
-            <a href="#">友情链接</a>
-        </div>
-        <p>CopyRight © 2016 北京美多商业股份有限公司 All Rights Reserved</p>
-        <p>电话：010-****888    京ICP备*******8号</p>
-    </div>
-    </div>
-    <script type="text/javascript">
-        var price = 7988.00;
-        var cat = 115;
-    </script>
-    <script type="text/javascript" src="/js/detail.js"></script>
+	<div class="footer">
+		<div class="foot_link">
+			<a href="#">关于我们</a>
+			<span>|</span>
+			<a href="#">联系我们</a>
+			<span>|</span>
+			<a href="#">招聘人才</a>
+			<span>|</span>
+			<a href="#">友情链接</a>
+		</div>
+		<p>CopyRight © 2016 北京美多商业股份有限公司 All Rights Reserved</p>
+		<p>电话：010-****888    京ICP备*******8号</p>
+	</div>
+	</div>
+	<script type="text/javascript">
+		var price = 7988.00;
+		var cat = 115;
+	</script>
+	<script type="text/javascript" src="/js/detail.js"></script>
 
 </body>
 </html>

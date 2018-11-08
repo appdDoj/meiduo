@@ -14,8 +14,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 import xadmin
+from xadmin.plugins import xversion
+xadmin.autodiscover()
+xversion.register_models()
 from django.conf.urls import url, include
-from django.contrib import admin
+# from django.contrib import admin
 
 urlpatterns = [
     # url(r'^admin/', admin.site.urls),
@@ -25,7 +28,6 @@ urlpatterns = [
     # users
     url('^', include('users.urls')),
     # 验证模块
-    url('^', include('verifications.urls')),
     # verifications
     url(r'^', include('verifications.urls')),
    # oauth

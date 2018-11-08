@@ -1,0 +1,5 @@
+# 热销商品数量
+HOT_SKUS_COUNT_LIMIT = 2
+
+# 商品评论数据返回数量
+SKU_COMMENT_COUNT_LIMIT = 30

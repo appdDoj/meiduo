@@ -1,7 +1,7 @@
 var vm = new Vue({
     el: '#app',
     data: {
-        host,
+        host: host,
         user_id: sessionStorage.user_id || localStorage.user_id,
         token: sessionStorage.token || localStorage.token,
         username: '',
@@ -12,14 +12,12 @@ var vm = new Vue({
         send_email_btn_disabled: false,
         send_email_tip: '重新发送验证邮件',
         email_error: false,
-
-        histories: [] // 存储后端响应的浏览记录列表
+        histories: []
     },
     mounted: function(){
         // 判断用户的登录状态
         if (this.user_id && this.token) {
             axios.get(this.host + '/user/', {
-                    // 向后端传递JWT token的方法
                     headers: {
                         'Authorization': 'JWT ' + this.token
                     },
@@ -33,7 +31,7 @@ var vm = new Vue({
                     this.email = response.data.email;
                     this.email_active = response.data.email_active;
 
-                    // 补充请求浏览历史
+                    // 请求浏览历史记录
                     axios.get(this.host + '/browse_histories/', {
                             headers: {
                                 'Authorization': 'JWT ' + this.token
@@ -46,7 +44,7 @@ var vm = new Vue({
                                 this.histories[i].url = '/goods/' + this.histories[i].id + '.html';
                             }
                         })
-                    })
+                })
                 .catch(error => {
                     if (error.response.status==401 || error.response.status==403) {
                         location.href = '/login.html?next=/user_center_info.html';
@@ -72,7 +70,7 @@ var vm = new Vue({
                 this.email_error = true;
                 return;
             }
-            axios.put(this.host + '/email/',
+            axios.post(this.host + '/emails/',
                 { email: this.email },
                 {
                     headers: {

@@ -10,8 +10,8 @@ var vm = new Vue({
         remember: false
     },
     methods: {
-        // 获取url路径参数
-        get_query_string: function(name){
+        // 获取url路径参数    
+        get_query_string: function(name){ 
             var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
             var r = window.location.search.substr(1).match(reg);
             if (r != null) {
@@ -39,14 +39,14 @@ var vm = new Vue({
         on_submit: function(){
             this.check_username();
             this.check_pwd();
-
+            
             if (this.error_username == false && this.error_pwd == false) {
                 axios.post(this.host+'/authorizations/', {
                         username: this.username,
                         password: this.password
                     }, {
                         responseType: 'json',
-                        withCredentials: true // 跨域时带上cookie
+                        withCredentials: true
                     })
                     .then(response => {
                         // 使用浏览器本地存储保存token
@@ -83,8 +83,8 @@ var vm = new Vue({
         },
         // qq登录
         qq_login: function(){
-            var next = this.get_query_string('next') || '/';
-            axios.get(this.host + '/oauth/qq/authorization/?next=' + next, {
+            var state = this.get_query_string('next') || '/';
+            axios.get(this.host + '/oauth/qq/authorization/?state=' + state, {
                     responseType: 'json'
                 })
                 .then(response => {
@@ -93,7 +93,6 @@ var vm = new Vue({
                 .catch(error => {
                     console.log(error.response.data);
                 })
-
         }
     }
 });

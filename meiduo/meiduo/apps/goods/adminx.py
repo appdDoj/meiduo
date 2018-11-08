@@ -47,4 +47,3 @@ xadmin.site.register(models.SKUImage)
 # class SKUAdmin(admin.ModelAdmin):
 #     model_icon = 'fa fa-gift'
 #     list_display = ['id', 'name', 'price', 'stock', 'sales', 'comments']
-s

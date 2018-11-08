@@ -1,3 +1,6 @@
-from django.contrib import admin
+import xadmin
 
+from . import models
 # Register your models here.
+
+xadmin.site.register(models.Area)

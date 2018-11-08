@@ -32,10 +32,8 @@ SECRET_KEY = '4j#gi7*q)m=+378e)a-3p@&k_xe&9lxj2x*_--vv_jv@b^-@i!'
 DEBUG = True
 
 #允许主机
-ALLOWED_HOSTS = [
-    'api.meiduo.site',
-    # '127.0.0.1',
-]
+ALLOWED_HOSTS = ['api.meiduo.site', '127.0.0.1', 'localhost', 'www.meiduo.site','image.meiduo.site:8888']
+
 
 
 # Application definition
@@ -49,22 +47,22 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework', # DRF
     # 'meiduo.apps.users.apps.UsersConfig',
-    'corsheaders',  # cors
-
+    'corsheaders',  # cors解决跨域请求
+    'django_crontab',  # 定时任务
     'ckeditor',  # 富文本编辑器
     'ckeditor_uploader',  # 富文本编辑器上传图片模块
-    'django_crontab',  # 定时任务
     'haystack', # 对接搜索引擎
     # 以下是注册xadmin
     'xadmin',
     'crispy_forms',
     'reversion',
-
+    'verifications.apps.VerificationsConfig', # 验证码
     'users.apps.UsersConfig', # 注册用户模块,为了适应AUTH_USER_MODEL，所以需要在注册时以users开头
     'oauth.apps.OauthConfig', # 第三方登录
     'areas.apps.AreasConfig', # 省市区
     'goods.apps.GoodsConfig', # 商品
     'contents.apps.ContentsConfig', # 主页广告
+    'carts.apps.CartsConfig', # 购物车管理
     'orders.apps.OrdersConfig', # 订单模块
     'payment.apps.PaymentConfig', # 支付模块
 ]
@@ -108,24 +106,24 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'meiduo18',
-        'HOST': 'localhost',
+        'HOST': '127.0.0.1',
         'PORT': 3306,
         'USER': 'meiduo_sz18',
         'PASSWORD': 'meiduo',
     },
-    'slave': {
-        'ENGINE': 'django.db.backends.mysql',
-        'HOST': '127.0.0.1',  # 数据库主机
-        'PORT': 8306,  # 数据库端口
-        'USER': 'root',  # 数据库用户名
-        'PASSWORD': 'mysql',  # 数据库用户密码
-        'NAME': 'meiduo18'  # 数据库名字
-    }
+    # 'slave': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'HOST': '127.0.0.1',  # 数据库主机
+    #     'PORT': 8306,  # 数据库端口
+    #     'USER': 'root',  # 数据库用户名
+    #     'PASSWORD': 'mysql',  # 数据库用户密码
+    #     'NAME': 'meiduo18'  # 数据库名字
+    # }
 }
 
 
 # 配置读写分离
-DATABASE_ROUTERS = ['meiduo.utils.db_router.MasterSlaveDBRouter']
+# DATABASE_ROUTERS = ['meiduo.utils.db_router.MasterSlaveDBRouter']
 
 
 
@@ -318,7 +316,7 @@ REST_FRAMEWORK_EXTENSIONS = {
 }
 
 # FastDFS
-FDFS_BASE_URL = 'http://127.0.0.1:8888/'
+FDFS_URL = 'http://image.meiduo.site:8888/'
 FDFS_CLIENT_CONF = os.path.join(BASE_DIR, 'utils/fastdfs/client.conf')
 
 # 修改默认的文件存储后端
@@ -362,9 +360,9 @@ HAYSTACK_CONNECTIONS = {
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
 # 支付宝
-ALIPAY_APPID = '2016082100308405'
+ALIPAY_APPID = "2016092000558153"
+ALIPAY_URL = "https://openapi.alipaydev.com/gateway.do"
 ALIPAY_DEBUG = True
-ALIPAY_URL = 'https://openapi.alipaydev.com/gateway.do'
 
 
 # 配置静态文件收集之后存放的目录

@@ -30,7 +30,7 @@ var vm = new Vue({
         is_set_title: [],
         input_title: ''
     },
-    mounted: function(){
+    created: function(){
         axios.get(this.host + '/areas/', {
                 responseType: 'json'
             })
@@ -40,8 +40,6 @@ var vm = new Vue({
             .catch(error => {
                 alert(error.response.data);
             });
-
-        // 获取用户地址列表
         axios.get(this.host + '/addresses/', {
                 headers: {
                     'Authorization': 'JWT ' + this.token
@@ -266,4 +264,4 @@ var vm = new Vue({
             this.is_set_title = [];
         }
     }
-});
+})

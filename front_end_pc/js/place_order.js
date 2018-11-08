@@ -12,12 +12,12 @@ var vm = new Vue({
         payment_amount: 0,
         order_submitting: false, // 正在提交订单标志
         pay_method: 1, // 支付方式,
-        nowsite:0, // 默认地址
+        nowsite: null, // 默认地址
         addresses: []
     },
     mounted: function(){
         // 获取地址信息
-        axios.get(this.host + '/user/addresses/', {
+        axios.get(this.host + '/addresses/', {
                 headers: {
                     'Authorization': 'JWT ' + this.token
                 },
@@ -73,8 +73,11 @@ var vm = new Vue({
             location.href = '/login.html';
         },
         // 提交订单
-        // 提交订单
         on_order_submit: function(){
+            if (this.nowsite === null) {
+                alert('请补充收获地址');
+                return;
+            }
             if (this.order_submitting == false){
                 this.order_submitting = true;
                 axios.post(this.host+'/orders/', {
