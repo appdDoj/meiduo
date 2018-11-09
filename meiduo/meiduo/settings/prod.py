@@ -80,7 +80,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'meiduo_mall.urls'
+ROOT_URLCONF = 'meiduo.urls'
 
 TEMPLATES = [
     {
@@ -98,7 +98,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'meiduo_mall.wsgi.application'
+WSGI_APPLICATION = 'meiduo.wsgi.application'
 
 
 # Database
@@ -107,59 +107,61 @@ WSGI_APPLICATION = 'meiduo_mall.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'HOST': '192.168.103.132',  # 数据库主机
-        'PORT': 3306,  # 数据库端口
-        'USER': 'meiduo_04',  # 数据库用户名
-        'PASSWORD': 'meiduo_04',  # 数据库用户密码
-        'NAME': 'meiduo_mall_04'  # 数据库名字
+        'NAME': 'meiduo18',
+        'HOST': '127.0.0.1',
+        'PORT': 3306,
+        'USER': 'meiduo_sz18',
+        'PASSWORD': 'meiduo',
     },
     'slave': {
         'ENGINE': 'django.db.backends.mysql',
-        'HOST': '192.168.103.132',  # 数据库主机
+        'HOST': '127.0.0.1',  # 数据库主机
         'PORT': 8306,  # 数据库端口
         'USER': 'root',  # 数据库用户名
         'PASSWORD': 'mysql',  # 数据库用户密码
-        'NAME': 'meiduo_mall_04'  # 数据库名字
+        'NAME': 'meiduo18'  # 数据库名字
     }
 }
 
 # 配置读写分离
-DATABASE_ROUTERS = ['meiduo_mall.utils.db_router.MasterSlaveDBRouter']
+DATABASE_ROUTERS = ['meiduo.utils.db_router.MasterSlaveDBRouter']
 
 
 # Redis
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://192.168.103.132:6379/0",
+        "LOCATION": "redis://127.0.0.1:6379/0",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     },
     "session": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://192.168.103.132:6379/1",
+        "LOCATION": "redis://127.0.0.1:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     },
-    "verify_codes": {
+    "sms_code": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://192.168.103.132:6379/2",
+        "LOCATION": "redis://127.0.0.1:6379/2",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     },
     "history": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://192.168.103.132:6379/3",
+        # "LOCATION": "redis://192.168.103.132:6379/3",
+        "LOCATION": "redis://127.0.0.1:6379/3",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     },
     "cart": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://192.168.103.132:6379/4",
+        # "LOCATION": "redis://192.168.103.132:6379/4",
+        "LOCATION": "redis://127.0.0.1:6379/4",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -252,8 +254,7 @@ LOGGING = {
 # DRF配置
 REST_FRAMEWORK = {
     # 异常处理
-    'EXCEPTION_HANDLER': 'meiduo_mall.utils.exceptions.exception_handler',
-
+    'EXCEPTION_HANDLER': 'meiduo.utils.exceptions.exception_handler',
     # 认证（读取用户的身份信息。判断当前的登录用户是否是本网站的用户）
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication', # JWT认证（放在首位就是默认）
@@ -262,8 +263,7 @@ REST_FRAMEWORK = {
     ),
 
     # 分页
-    'DEFAULT_PAGINATION_CLASS': 'meiduo_mall.utils.pagination.StandardResultsSetPagination',
-
+    'DEFAULT_PAGINATION_CLASS': 'meiduo.utils.pagination.StandardResultsSetPagination',
 }
 
 # JWT配置
@@ -288,10 +288,6 @@ AUTH_USER_MODEL = 'users.User'
 
 # CORS
 CORS_ORIGIN_WHITELIST = (
-    '127.0.0.1:8080',
-    'localhost:8080',
-    'www.meiduo.site:8080',
-    'api.meiduo.site:8000',
     'www.meiduo.site' # 追加前端的80端口的域（nginx提供的）
 )
 CORS_ALLOW_CREDENTIALS = True  # 允许携带cookie
@@ -321,11 +317,12 @@ REST_FRAMEWORK_EXTENSIONS = {
 }
 
 # FastDFS
-FDFS_BASE_URL = 'http://192.168.103.132:8888/'
+FDFS_URL = 'http://image.meiduo.site:8888/'
 FDFS_CLIENT_CONF = os.path.join(BASE_DIR, 'utils/fastdfs/client.conf')
 
 # 修改默认的文件存储后端
-DEFAULT_FILE_STORAGE = 'meiduo_mall.utils.fastdfs.fdfs_storage.FastDFSStorage'
+DEFAULT_FILE_STORAGE = 'meiduo.utils.fastdfs.fdfs_storage.FastDFSStorage'
+
 
 # 富文本编辑器ckeditor配置
 CKEDITOR_CONFIGS = {
@@ -354,8 +351,8 @@ CRONTAB_COMMAND_PREFIX = 'LANG_ALL=zh_cn.UTF-8'
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-        'URL': 'http://192.168.103.132:9200/',  # 此处为elasticsearch运行的服务器ip地址，端口号固定为9200
-        'INDEX_NAME': 'meiduo_04',  # 指定elasticsearch建立的索引库的名称
+        'URL': 'http://127.0.0.1:9200/',  # 此处为elasticsearch运行的服务器ip地址，端口号固定为9200
+        'INDEX_NAME': 'meiduo18',  # 指定elasticsearch建立的索引库的名称
     },
 }
 
@@ -363,9 +360,9 @@ HAYSTACK_CONNECTIONS = {
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
 # 支付宝
-ALIPAY_APPID = '2016082100308405'
+ALIPAY_APPID = "2016092000558153"
+ALIPAY_URL = "https://openapi.alipaydev.com/gateway.do"
 ALIPAY_DEBUG = True
-ALIPAY_URL = 'https://openapi.alipaydev.com/gateway.do'
 
 
 # 配置静态文件收集之后存放的目录

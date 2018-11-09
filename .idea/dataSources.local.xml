@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal">
+    <data-source name="@localhost" uuid="7b8adbb8-c6de-4fe9-a7a5-8c765ca21ecc">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" />
+      <secret-storage>memory</secret-storage>
+      <user-name>root</user-name>
+    </data-source>
+    <data-source name="@localhost [2]" uuid="64e783cc-107d-4737-998e-f1ddba300489">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" />
+      <secret-storage>memory</secret-storage>
+    </data-source>
+  </component>
+</project>
